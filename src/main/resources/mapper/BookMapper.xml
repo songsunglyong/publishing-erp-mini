@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portfolio.erp.book.BookMapper">
+  <sql id="columns">id, isbn, title, author, publisher, publication_date, list_price, active, created_at, updated_at</sql>
+  <sql id="filters">
+    <where>
+      <if test="q != null and q != ''">(title LIKE #{pattern} ESCAPE '!' OR isbn LIKE #{pattern} ESCAPE '!')</if>
+      <if test="active != null">AND active = #{active}</if>
+    </where>
+  </sql>
+  <select id="findById" resultType="com.portfolio.erp.book.Book">
+    SELECT <include refid="columns"/> FROM books WHERE id = #{id}
+  </select>
+  <select id="findAll" resultType="com.portfolio.erp.book.Book">
+    SELECT <include refid="columns"/> FROM books <include refid="filters"/>
+    ORDER BY created_at DESC, id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="count" resultType="long">SELECT COUNT(*) FROM books <include refid="filters"/></select>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO books (isbn, title, author, publisher, publication_date, list_price, active)
+    VALUES (#{isbn}, #{title}, #{author}, #{publisher}, #{publicationDate}, #{listPrice}, #{active})
+  </insert>
+  <update id="update">
+    UPDATE books SET isbn = #{isbn}, title = #{title}, author = #{author}, publisher = #{publisher}, publication_date = #{publicationDate}, list_price = #{listPrice}, active = #{active}, updated_at = CURRENT_TIMESTAMP(6)
+    WHERE id = #{id}
+  </update>
+  <update id="deactivate">UPDATE books SET active = FALSE, updated_at = CURRENT_TIMESTAMP(6) WHERE id = #{id}</update>
+  <insert id="insertInventory">INSERT INTO inventory (book_id, quantity_on_hand) VALUES (#{bookId}, 0)</insert>
+</mapper>

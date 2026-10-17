@@ -1,36 +1,44 @@
 # publishing-erp-mini
 
-## 프로젝트 목적
+## 목적과 범위
 
-`PRD_Publishing_ERP_Mini.md` v1.0에 정의된 한국어 출판사 내부 업무용 ERP 포트폴리오·시연 프로젝트다. 도서, 거래처, 주문, 출고, 재고 원장과 매출 요약을 다루며 합성 데이터만 사용한다. 운영용 ERP, 회계·세금계산서·급여·결제 연동은 범위에서 제외한다.
+사용자 PRD v1.0의 한국어 출판 업무 ERP 포트폴리오·시연 프로젝트다. 합성 데이터만 사용한다. 이번 구현 범위는 Phase 0과 Phase 1이다. 주문·출고·반품·재고 원장·보고서·로그인·권한은 후속 단계이며 Docker·서버 호스팅은 진행하지 않았다.
 
-## 현재 상태
+## 현재 상태 (2026-10-17)
 
-- 2026-10-17 최초 확인 시 작업 폴더는 비어 있었으며 기존 문서·소스 코드·Git 이력이 없었다.
-- 프로젝트 운영 문서와 Git 기본 설정을 완료했다.
-- GitHub: https://github.com/songsunglyong/publishing-erp-mini (비공개), `origin`, 기본 브랜치 `main`.
-- 문서 작성 중 루트에 PRD v1.0이 추가되었고 이를 읽어 계획에 반영했다.
-- 애플리케이션, 데이터베이스, 테스트, 빌드·배포 설정은 아직 없다.
-- PRD 지정 스택: Java 21, Maven Wrapper, Spring Boot 3.5.x, Spring MVC, JSP/JSTL, jQuery, Bootstrap 5, MariaDB, MyBatis XML. 정확한 의존성 버전과 호환성은 구현 전에 검증한다.
-- 기본 개발 환경은 Docker 없는 로컬 실행이며 Docker Compose는 후속 단계다.
-- 다음 구현 단계는 Phase 0(환경·JSP·DB 연결 검증)이며 아직 시작하지 않았다.
+- Phase 0 완료: Java 21 ARM64, Maven Wrapper, Spring Boot 실행 WAR, JSP/JSTL, 실제 MariaDB 연결, HTTP 상태 확인.
+- Phase 1 완료: 도서·거래처 등록/조회/수정/비활성화, 검색·상태 필터·10건 페이지네이션, 한국어 검증, ISBN 체크섬·고유 키 처리.
+- Flyway 업무 스키마와 demo/test 전용 합성 시드, 신규 도서 재고 0행 자동 생성(동일 트랜잭션).
+- 실제 MariaDB·HTTP 테스트 29개 통과. H2나 테스트 컨테이너를 사용하지 않는다.
+- 지정 기술 스택을 유지한다. Java 21.0.12.1 / Spring Boot 3.5.16 / MyBatis Starter 3.0.5 / MariaDB 11.4.13.
+- Mac ARM64 RAM 8GB에서 네이티브 로컬 실행을 검증했다.
+- GitHub: https://github.com/songsunglyong/publishing-erp-mini (비공개). 이번 구현은 로컬 커밋이며 아직 푸시하지 않았다.
 
-## 현재 구조
+## 실제 구조
 
 ```text
 publishing-erp-mini/
-├── .gitignore          # 로컬 환경 파일 및 비밀정보 제외
-├── AGENTS.md           # 저장소 전체 작업 규칙 진입점
-├── PRD_Publishing_ERP_Mini.md # 사용자 제공 요구사항 명세(현재 로컬 파일)
-└── doc/
-    ├── PROJECT.md      # 프로젝트 목적과 현재 구조
-    ├── AGENTS.md       # Codex 작업 규칙 원본
-    ├── TODO.md         # 앞으로 할 작업과 완료 상태
-    ├── CHANGELOG.md    # 완료된 변경과 검증 기록
-    ├── DECISIONS.md    # 중요한 설계 결정과 이유
-    └── README.md       # 설치·실행·검증 방법
+├── AGENTS.md, README.md, PRD_Publishing_ERP_Mini.md
+├── pom.xml, mvnw, mvnw.cmd, .mvn/  # Java 21 / Maven 3.9.11
+├── scripts/                      # DB 시작·종료, 앱 실행, 검증
+├── src/main/java/com/portfolio/erp/
+│   ├── ErpApplication.java
+│   ├── book/                     # Controller, Service, Mapper, Form, entity
+│   ├── partner/                  # Controller, Service, Mapper, Form, entity
+│   └── common/                   # 페이지, 검증, CSRF, 오류, 홈/상태 확인
+├── src/main/resources/
+│   ├── application*.yml
+│   ├── mapper/                   # MyBatis XML
+│   ├── db/migration/             # V1 업무 스키마
+│   ├── db/demo/                  # V1.1 가상 데이터
+│   └── static/                   # CSS, jQuery 사용 코드
+├── src/main/webapp/WEB-INF/jsp/   # book, partner, common, home
+├── src/test/java/com/portfolio/erp/
+└── doc/                          # 프로젝트·실행·설계·검증 문서
 ```
+
+`.local/`(DB 데이터·생성 암호·실행 로그)와 `target/`(빌드·테스트 산출물)은 Git에서 제외한다. jQuery와 Bootstrap은 Maven WebJars로 제공되어 런타임 CDN 요청이 없다.
 
 ## 다음 단계
 
-`TODO.md`와 PRD 단계별 통과 조건에 따라 다음 미완료 단계부터 구현한다. PRD의 `docs/` 문서 경로 예시는 이번 요청에 맞추어 `doc/`로 통일한다. 실제 구현에 맞추어 이 문서의 구조와 상태를 갱신한다.
+현재 Phase 1에서 멈춘다. 다음 구현은 Phase 2 주문·출고·반품·재고 원장이며, 사용자 지시에 따라 시작한다. 상세 검증과 남은 작업은 `TEST_RESULTS.md`, `TODO.md`를 참고한다.

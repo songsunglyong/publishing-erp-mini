@@ -1,0 +1,7 @@
+<%@ page pageEncoding="UTF-8" %>
+<nav class="d-flex justify-content-between align-items-center mt-3" aria-label="페이지 이동">
+<span>총 <c:out value="${result.total}"/>건 · <c:out value="${result.page}"/> / <c:out value="${result.totalPages}"/> 페이지</span>
+<div class="actions">
+<c:if test="${result.hasPrevious}"><c:url var="previousUrl" value="/${section}"><c:param name="q" value="${query.q}"/><c:param name="status" value="${query.status}"/><c:param name="page" value="${result.page - 1}"/></c:url><a class="btn btn-outline-secondary" href="<c:out value='${previousUrl}'/>">이전</a></c:if>
+<c:if test="${result.hasNext}"><c:url var="nextUrl" value="/${section}"><c:param name="q" value="${query.q}"/><c:param name="status" value="${query.status}"/><c:param name="page" value="${result.page + 1}"/></c:url><a class="btn btn-outline-secondary" href="<c:out value='${nextUrl}'/>">다음</a></c:if>
+</div></nav>

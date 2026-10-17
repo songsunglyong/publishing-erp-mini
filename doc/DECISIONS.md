@@ -39,3 +39,35 @@
 - 결정: PRD의 `docs/` 예시는 `doc/`로 통일하고 GitHub 저장소는 현재 사용자 지시에 따라 비공개로 유지한다.
 - 이유: 사용자가 직접 지정한 문서 경로와 비공개 생성 요청이 PRD 예시·공개 포트폴리오 목표보다 우선한다.
 - 영향: 공개 전환은 후속 사용자 지시가 있을 때 진행한다. PRD 원본은 수정하지 않는다.
+
+## D006 — 호환성을 확인한 Boot 3.5 / MyBatis 3.0과 실행 WAR
+
+- 날짜: 2026-10-17
+- 상태: 채택 및 실제 실행 검증
+- 결정: Java 21, Spring Boot 3.5.16, MyBatis Starter 3.0.5, Maven 3.9.11 / Wrapper 3.3.4, Tomcat 10.1.55, MariaDB JDBC 3.5.8, Flyway 11.7.2, JSTL 3.0.1을 사용한다. Boot BOM이 관리하는 버전을 따른다. MyBatis core 실제 버전은 3.5.19다.
+- 이유: [MyBatis 공식 호환표](https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/)의 3.0 계열은 Boot 3.2–3.5와 Java 17 이상을 지원한다. [Boot 공식 JSP 제한](https://docs.spring.io/spring-boot/3.5/reference/web/servlet.html#web.servlet.embedded-container.jsp-limitations)에 따라 실행 JAR 대신 Tomcat 기반 실행 WAR를 사용한다.
+- 검증: Java 21 aarch64에서 빌드, 실제 MariaDB 11.4.13 마이그레이션, JSP HTTP 렌더와 WAR 시작 성공. 정확한 버전은 Maven Central 메타데이터와 dependency:list로 확인했다.
+
+## D007 — 프로젝트 전용 네이티브 DB와 작은 메모리 한도
+
+- 날짜: 2026-10-17
+- 상태: 채택
+- 결정: `.local/data`의 MariaDB를 127.0.0.1:3307에 실행하고 업무/테스트 스키마·계정을 분리한다. JVM 힙은 Maven 384MB, 앱 768MB, 테스트 512MB, Hikari 풀은 앱 5/테스트 2개다.
+- 이유: RAM 8GB에서 Docker 없이 반복 검증하고 기존 DB 서비스·스키마와 격리한다.
+- 영향: 생성 암호·DB 파일·로그는 Git에서 제외한다. Java 경로는 스크립트에서 설정하므로 전역 시스템 링크가 필요 없다. 각 프로세스의 전체 메모리는 힙 외 메모리도 포함한다.
+
+## D008 — 마이그레이션과 선택적 합성 시드
+
+- 날짜: 2026-10-17
+- 상태: 채택
+- 결정: Flyway V1은 업무 테이블, demo/test 전용 V1.1은 합성 데이터를 생성한다. 신규 도서 재고 0행은 서비스에서 같은 트랜잭션에 추가한다. 후속 마이그레이션은 V2 이상으로 관리한다.
+- 이유: 빈 DB 설치를 재현하고 local 모드에 예시 데이터를 강제로 넣지 않는다. DB 트랜잭션으로 도서·재고의 일관성을 보장한다.
+- 영향: demo 적용 DB에서는 계속 demo 프로필을 사용해 이력을 유지한다. 금액은 Long/BIGINT 정수 KRW, ISBN/코드는 UNIQUE, 재고는 FK와 음수 방지 CHECK로 보호한다.
+
+## D009 — Phase 1 폼 보호와 후속 보안 통합
+
+- 날짜: 2026-10-17
+- 상태: 채택
+- 결정: Phase 1에서도 상태 변경은 POST와 세션 CSRF 토큰으로 보호하고 폼 허용 필드를 제한한다. 출력은 HTML escaping을 적용한다. 로그인·역할·Spring Security는 Phase 3에 통합한다.
+- 이유: 실제 동작하는 로컬 관리 화면의 기본 입력·요청 보호를 마련하면서 현재 범위를 유지한다.
+- 영향: 현재는 사용자 인증·접근 권한 분리가 없으며 루프백에서 합성 데이터로만 사용한다. Phase 2 주문 확정 시 재고를 예약하지 않고 출고 시 검사·차감한다.
