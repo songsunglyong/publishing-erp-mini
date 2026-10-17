@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:mariadb://127.0.0.1:3307/publishing_erp_test}
+    username: ${TEST_DB_USERNAME:erp_test}
+    password: ${TEST_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 2
+  flyway:
+    locations: classpath:db/migration,classpath:db/demo

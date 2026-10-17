@@ -1,0 +1,4 @@
+# Local data is persistent; demo seeds are opt-in.
+logging:
+  level:
+    com.portfolio.erp: INFO

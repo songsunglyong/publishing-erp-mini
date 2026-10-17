@@ -14,12 +14,12 @@
 
 - [x] 사용자 제공 `PRD_Publishing_ERP_Mini.md` v1.0을 읽고 목적·범위·지정 기술 스택을 반영.
 - [ ] 구현 시작 전에 PRD의 현재 로컬 파일을 버전 관리에 포함할지 확인.
-- [ ] Java 21 / Spring Boot 3.5.x / MyBatis / JSP / MariaDB 및 마이그레이션 도구의 정확한 호환 버전 검증·기록.
+- [x] Java 21 / Spring Boot 3.5.x / MyBatis / JSP / MariaDB 및 마이그레이션 도구의 정확한 호환 버전 검증·기록.
 - [ ] ERD와 상세 스키마 작성. 금액은 정수 KRW 또는 고정소수점, 확정 시 재고 예약 없이 출고 시 차감.
 
-## 단계별 구현 (아직 시작하지 않음)
+## 단계별 구현
 
-- [ ] Phase 0: ARM64/JDK·도구 확인, Maven Wrapper, JSP 렌더, MariaDB 연결, 상태 확인. 통과 조건: localhost:8080 페이지와 DB 테스트 성공.
+- [x] Phase 0: ARM64/JDK·도구 확인, Maven Wrapper, JSP 렌더, MariaDB 연결, 상태 확인. 통과 조건: localhost:8080 페이지와 DB 테스트 성공.
 - [ ] Phase 1: 마이그레이션·합성 시드, 도서/거래처 CRUD·검색·페이지네이션, 검증 테스트.
 - [ ] Phase 2: 주문·출고·취소·반품·재고 원장, 재고 부족·중복 출고·롤백·동시성 통합 테스트.
 - [ ] Phase 3: 매출 지표 정의·보고서, 로그인·권한·CSRF, 집계 및 보안 검증.
