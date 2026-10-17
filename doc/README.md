@@ -2,13 +2,22 @@
 
 ## 현재 상태
 
-현재는 프로젝트 운영 문서만 있으며 설치할 애플리케이션이나 실행 서버가 없다. 기술 스택과 런타임은 미정이다. 애플리케이션 초기 구성 후 검증된 설치·실행·빌드·테스트 명령을 이 문서에 추가한다.
+현재는 프로젝트 운영 문서만 있으며 설치할 애플리케이션이나 실행 서버가 없다. PRD 지정 스택은 Java 21, Spring Boot 3.5.x, Maven Wrapper, JSP/JSTL, jQuery, MariaDB, MyBatis XML이다. 정확한 의존성 버전은 구현 전에 검증한다. 애플리케이션 초기 구성 후 검증된 설치·실행·빌드·테스트 명령을 이 문서에 추가한다.
 
 ## 준비 도구
 
 - Git: 소스와 문서 버전 관리.
 - GitHub 계정 및 저장소 접근 권한: 비공개 저장소 복제와 동기화.
 - GitHub CLI(`gh`): 선택 사항. 저장소 생성과 인증 확인에 사용한다.
+
+## 저장소 복제
+
+비공개 저장소 접근 권한이 있는 계정으로 인증한 뒤 실행한다.
+
+```sh
+git clone https://github.com/songsunglyong/publishing-erp-mini.git
+cd publishing-erp-mini
+```
 
 ## 로컬 작업
 
