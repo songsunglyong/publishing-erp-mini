@@ -11,3 +11,9 @@ if [ -f .local/db.env ]; then
   . .local/db.env
   set +a
 fi
+
+if [ -f .local/auth.env ]; then
+  set -a
+  . .local/auth.env
+  set +a
+fi

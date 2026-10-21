@@ -8,7 +8,7 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = Isbn13Validator.class)
 public @interface Isbn13 {
-    String message() default "ISBN은 978 또는 979로 시작하는 유효한 13자리 숫자여야 합니다.";
+    String message() default "{validation.isbn}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

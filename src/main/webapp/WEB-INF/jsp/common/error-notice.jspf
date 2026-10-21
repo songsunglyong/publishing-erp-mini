@@ -1,0 +1,11 @@
+<%@ page pageEncoding="UTF-8" %>
+<c:if test="${not empty errorNotice}">
+<section class="alert alert-danger" role="alert" aria-labelledby="error-title">
+<strong id="error-title"><spring:message code="ui.error.title"/></strong>
+<p class="mb-2"><c:out value="${errorNotice.message}"/></p>
+<c:if test="${not empty fieldMessages}"><ul><c:forEach var="fieldMessage" items="${fieldMessages}"><li><c:out value="${fieldMessage}"/></li></c:forEach></ul></c:if>
+<p class="small mb-1"><spring:message code="ui.error.code"/>: <c:out value="${errorNotice.code}"/>
+ · <spring:message code="ui.error.trace"/>: <c:out value="${errorNotice.traceId}"/></p>
+<p class="small mb-0"><spring:message code="ui.error.contact"/></p>
+</section>
+</c:if>

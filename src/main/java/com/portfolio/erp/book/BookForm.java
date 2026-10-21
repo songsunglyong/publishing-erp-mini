@@ -8,19 +8,19 @@ import com.portfolio.erp.common.Isbn13;
 public class BookForm {
     @Isbn13
     private String isbn;
-    @NotBlank(message = "도서명을 입력하세요.") @Size(max = 200, message = "도서명은 200자 이하여야 합니다.")
+    @NotBlank(message = "{validation.title.required}") @Size(max = 200, message = "{validation.title.size}")
     private String title;
-    @Size(max = 100, message = "저자는 100자 이하여야 합니다.")
+    @Size(max = 100, message = "{validation.author.size}")
     private String author;
-    @Size(max = 100, message = "출판사는 100자 이하여야 합니다.")
+    @Size(max = 100, message = "{validation.publisher.size}")
     private String publisher;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate publicationDate;
-    @NotNull(message = "정가를 입력하세요.") @Min(value = 0, message = "정가는 0 이상이어야 합니다.") @Max(value = 999999999999L, message = "정가가 허용 범위를 초과했습니다.")
+    @NotNull(message = "{validation.price.required}") @Min(value = 0, message = "{validation.price.min}") @Max(value = 999999999999L, message = "{validation.price.max}")
     private Long listPrice;
-    @NotNull(message = "사용 상태를 선택하세요.")
+    @NotNull(message = "{validation.active}")
     private Boolean active = true;
-    @AssertTrue(message = "발행일은 1000-01-01부터 9999-12-31 사이여야 합니다.")
+    @AssertTrue(message = "{validation.date.range}")
     public boolean isPublicationDateSupported() {
         return publicationDate == null || (publicationDate.getYear() >= 1000 && publicationDate.getYear() <= 9999);
     }

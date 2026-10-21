@@ -1,7 +1,9 @@
 package com.portfolio.erp.partner;
 
 import jakarta.validation.Valid;
-import org.springframework.dao.DuplicateKeyException;
+import com.portfolio.erp.common.error.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +16,8 @@ import com.portfolio.erp.common.PageQuery;
 @RequestMapping("/partners")
 public class PartnerController {
     private final PartnerService service;
-    public PartnerController(PartnerService service) { this.service = service; }
+    private final UserErrors userErrors;
+    public PartnerController(PartnerService service, UserErrors userErrors) { this.service = service; this.userErrors = userErrors; }
     @InitBinder("form") void formBinder(WebDataBinder binder) { binder.setAllowedFields("code", "name", "type", "contactPerson", "phone", "email", "address", "active", "_csrf"); }
     @InitBinder("query") void queryBinder(WebDataBinder binder) { binder.setAllowedFields("q", "status", "page"); }
     @GetMapping public String list(@Valid @ModelAttribute("query") PageQuery query, Model model) {
@@ -30,22 +33,22 @@ public class PartnerController {
         model.addAttribute("entityId", id);
         return "partner/form";
     }
-    @PostMapping public String create(@Valid @ModelAttribute("form") PartnerForm form, BindingResult errors, RedirectAttributes redirect) {
-        if (errors.hasErrors()) return "partner/form";
-        try { service.create(form); } catch (DuplicateKeyException ex) {
-            errors.rejectValue("code", "duplicate", "이미 등록된 거래처 코드입니다.");
+    @PostMapping public String create(@Valid @ModelAttribute("form") PartnerForm form, BindingResult errors, RedirectAttributes redirect, HttpServletRequest request, HttpServletResponse response) {
+        if (errors.hasErrors()) { userErrors.validation(errors, request, response); return "partner/form"; }
+        try { service.create(form); } catch (RuntimeException ex) {
+            userErrors.formFailure(ex, errors, "code", ErrorCode.DUPLICATE_PARTNER_CODE, request, response);
             return "partner/form";
         }
         redirect.addFlashAttribute("notice", "거래처를 등록했습니다.");
         return "redirect:/partners";
     }
     @PostMapping("/{id}") public String update(@PathVariable long id, @Valid @ModelAttribute("form") PartnerForm form,
-            BindingResult errors, Model model, RedirectAttributes redirect) {
-        service.find(id);
+            BindingResult errors, Model model, RedirectAttributes redirect, HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("entityId", id);
-        if (errors.hasErrors()) return "partner/form";
-        try { service.update(id, form); } catch (DuplicateKeyException ex) {
-            errors.rejectValue("code", "duplicate", "이미 등록된 거래처 코드입니다.");
+        if (errors.hasErrors()) { userErrors.validation(errors, request, response); return "partner/form"; }
+        try { service.find(id); service.update(id, form); } catch (RuntimeException ex) {
+            if (ex instanceof com.portfolio.erp.common.NotFoundException) throw ex;
+            userErrors.formFailure(ex, errors, "code", ErrorCode.DUPLICATE_PARTNER_CODE, request, response);
             return "partner/form";
         }
         redirect.addFlashAttribute("notice", "거래처를 수정했습니다.");

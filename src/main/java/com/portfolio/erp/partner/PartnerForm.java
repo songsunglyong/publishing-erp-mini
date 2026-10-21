@@ -3,21 +3,21 @@ package com.portfolio.erp.partner;
 import jakarta.validation.constraints.*;
 
 public class PartnerForm {
-    @NotBlank(message = "거래처 코드를 입력하세요.") @Pattern(regexp = "[A-Z0-9_-]{1,40}", message = "코드는 영문 대문자·숫자·밑줄·하이픈 40자 이내로 입력하세요.")
+    @NotBlank(message = "{validation.code.required}") @Pattern(regexp = "[A-Z0-9_-]{1,40}", message = "{validation.code.pattern}")
     private String code;
-    @NotBlank(message = "거래처명을 입력하세요.") @Size(max = 150, message = "거래처명은 150자 이하여야 합니다.")
+    @NotBlank(message = "{validation.name.required}") @Size(max = 150, message = "{validation.name.size}")
     private String name;
-    @NotNull(message = "거래처 유형을 선택하세요.") @Pattern(regexp = "BOOKSTORE|DISTRIBUTOR", message = "올바른 거래처 유형을 선택하세요.")
+    @NotNull(message = "{validation.type}") @Pattern(regexp = "BOOKSTORE|DISTRIBUTOR", message = "{validation.type}")
     private String type;
-    @Size(max = 100, message = "담당자는 100자 이하여야 합니다.")
+    @Size(max = 100, message = "{validation.contact.size}")
     private String contactPerson;
-    @Size(max = 30, message = "전화번호는 30자 이하여야 합니다.")
+    @Size(max = 30, message = "{validation.phone.size}")
     private String phone;
-    @Email(message = "올바른 이메일을 입력하세요.") @Size(max = 254, message = "이메일은 254자 이하여야 합니다.")
+    @Email(message = "{validation.email}") @Size(max = 254, message = "{validation.email.size}")
     private String email;
-    @Size(max = 300, message = "주소는 300자 이하여야 합니다.")
+    @Size(max = 300, message = "{validation.address.size}")
     private String address;
-    @NotNull(message = "사용 상태를 선택하세요.")
+    @NotNull(message = "{validation.active}")
     private Boolean active = true;
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code == null || code.isBlank() ? null : code.trim(); }

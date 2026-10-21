@@ -1,0 +1,40 @@
+# 루프백 전용 HTTP 시연 구성. 실행 검증/배포는 사용자 후속 요청 시 수행한다.
+name: publishing-erp-mini
+services:
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: publishing_erp
+      MARIADB_USER: erp_app
+      MARIADB_PASSWORD: ${COMPOSE_DB_PASSWORD:?로컬 .env에 COMPOSE_DB_PASSWORD를 설정하세요}
+      MARIADB_ROOT_PASSWORD: ${COMPOSE_DB_ROOT_PASSWORD:?로컬 .env에 COMPOSE_DB_ROOT_PASSWORD를 설정하세요}
+    command: ["--innodb-buffer-pool-size=128M", "--max-connections=15", "--performance-schema=OFF", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - erp-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    mem_limit: 512m
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: container
+      DB_URL: jdbc:mariadb://db:3306/publishing_erp
+      DB_USERNAME: erp_app
+      DB_PASSWORD: ${COMPOSE_DB_PASSWORD:?로컬 .env에 COMPOSE_DB_PASSWORD를 설정하세요}
+      ERP_BOOTSTRAP_ENABLED: "true"
+      ERP_BOOTSTRAP_USERNAME: ${COMPOSE_ADMIN_USERNAME:-admin}
+      ERP_BOOTSTRAP_PASSWORD: ${COMPOSE_ADMIN_PASSWORD:?로컬 .env에 COMPOSE_ADMIN_PASSWORD를 설정하세요}
+    ports:
+      - "127.0.0.1:${COMPOSE_PORT:-8080}:8080"
+    mem_limit: 1200m
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  erp-db:

@@ -1,0 +1,14 @@
+package com.portfolio.erp.common.error;
+
+/** Stable public codes; exception text is never a user message. */
+public enum ErrorCode {
+    INACTIVE_MASTER(409), INSUFFICIENT_STOCK(409), QUANTITY_LIMIT(409), AMOUNT_LIMIT(409), ORDER_ITEMS_INVALID(400), ORDER_STATE(409), RETURN_LIMIT(409), DUPLICATE_OPERATION(409),
+    PASSWORD_POLICY(400), PASSWORD_CHANGE_FAILED(400), DUPLICATE_USERNAME(409), VALIDATION_FAILED(400), BAD_REQUEST(400), NOT_FOUND(404), METHOD_NOT_ALLOWED(405), NOT_ACCEPTABLE(406), UNSUPPORTED_MEDIA_TYPE(415),
+    DUPLICATE_ISBN(409), DUPLICATE_PARTNER_CODE(409), DUPLICATE_DATA(409), BUSINESS_RULE(409),
+    LOGIN_FAILED(401), LOGIN_REQUIRED(401), SESSION_EXPIRED(401), ACCESS_DENIED(403),
+    CSRF_INVALID(403), SERVICE_UNAVAILABLE(503), SERVER_ERROR(500);
+    private final int status;
+    ErrorCode(int status) { this.status = status; }
+    public int getStatus() { return status; }
+    public String getMessageKey() { return "error." + name(); }
+}

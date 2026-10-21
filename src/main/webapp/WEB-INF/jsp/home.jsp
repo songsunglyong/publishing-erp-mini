@@ -1,3 +1,7 @@
 <%@ page pageEncoding="UTF-8" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
-<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>출판 ERP Mini</title><link rel="stylesheet" href="/webjars/bootstrap/5.3.8/css/bootstrap.min.css"></head><body class="container py-5"><h1>출판 ERP Mini</h1><p>도서와 거래처를 관리하는 출판 업무 시연 시스템</p><nav class="d-flex gap-3"><a href="/books">도서 관리</a><a href="/partners">거래처 관리</a><a href="/health">DB 상태 확인</a></nav><p class="mt-4 text-secondary">로컬 합성 데이터 전용 · 인증은 Phase 3에서 추가됩니다.</p></body></html>
+<%@ include file="common/header.jspf" %>
+<h1>출판 ERP Mini</h1>
+<p>도서와 거래처를 관리하는 출판 업무 시연 시스템1</p>
+<nav class="d-flex gap-3"><a href="/books">도서 관리</a><a href="/partners">거래처 관리</a><a href="/health">DB 상태 확인</a></nav>
+<p class="mt-4 text-secondary">로컬 합성 데이터 전용 · 로그인 후 권한에 따라 이용할 수 있습니다.</p>
+<%@ include file="common/footer.jspf" %>

@@ -3,10 +3,10 @@
 <div class="form-shell"><h1 class="mb-4">도서 ${empty entityId ? '등록' : '수정'}</h1>
 <c:set var="saveAction" value="/books"/><c:if test="${not empty entityId}"><c:set var="saveAction" value="/books/${entityId}"/></c:if>
 <form:form modelAttribute="form" method="post" action="${saveAction}" cssClass="card card-body" htmlEscape="true">
-<input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
+<input type="hidden" name="_csrf" value="<c:out value='${_csrf.token}'/>">
 <form:errors path="*" cssClass="alert alert-danger" element="div"/>
 <div class="row g-3"><div class="col-md-6"><form:label path="isbn" cssClass="form-label">ISBN-13 (선택)</form:label><form:input path="isbn" cssClass="form-control" maxlength="13"/><form:errors path="isbn" cssClass="field-error"/></div>
-<div class="col-md-6"><form:label path="title" cssClass="form-label">도서명</form:label><form:input path="title" cssClass="form-control" maxlength="200"/><form:errors path="title" cssClass="field-error"/></div>
+<div class="col-md-6"><form:label path="title" cssClass="form-label">도서명(필수)</form:label><form:input path="title" cssClass="form-control" maxlength="200"/><form:errors path="title" cssClass="field-error"/></div>
 <div class="col-md-6"><form:label path="author" cssClass="form-label">저자</form:label><form:input path="author" cssClass="form-control" maxlength="100"/><form:errors path="author" cssClass="field-error"/></div>
 <div class="col-md-6"><form:label path="publisher" cssClass="form-label">출판사</form:label><form:input path="publisher" cssClass="form-control" maxlength="100"/><form:errors path="publisher" cssClass="field-error"/></div>
 <div class="col-md-6"><form:label path="publicationDate" cssClass="form-label">발행일</form:label><form:input path="publicationDate" cssClass="form-control" type="date" min="1000-01-01" max="9999-12-31"/><form:errors path="publicationDate" cssClass="field-error"/></div>

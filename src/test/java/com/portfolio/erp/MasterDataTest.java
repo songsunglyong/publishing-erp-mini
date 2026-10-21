@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@org.springframework.context.annotation.Import(SecurityTestUsers.class)
+@org.springframework.security.test.context.support.WithMockUser(roles="ADMIN")
 class MasterDataTest {
     @Autowired BookService books;
     @Autowired PartnerService partners;
@@ -33,6 +35,7 @@ class MasterDataTest {
 
     @BeforeEach void requireDedicatedTestDatabase() {
         assertThat(jdbc.queryForObject("SELECT DATABASE()", String.class)).endsWith("_test");
+        jdbc.update("DELETE FROM login_attempts");
     }
     @AfterEach void removeOnlyTestRecords() {
         clients.forEach(HttpClient::close);
@@ -61,6 +64,7 @@ class MasterDataTest {
         assertThat(partners.list(query("DEMO_", 1, "")).getTotal()).isEqualTo(3);
     }
     @Test @Transactional void demoSeedAlsoWorksAfterLocalBooksAlreadyExist() {
+        jdbc.update("DELETE FROM stock_movements WHERE book_id IN (SELECT id FROM books WHERE title LIKE '시연 도서:%')");
         jdbc.update("DELETE FROM inventory WHERE book_id IN (SELECT id FROM books WHERE title LIKE '시연 도서:%')");
         jdbc.update("DELETE FROM books WHERE title LIKE '시연 도서:%'");
         jdbc.update("DELETE FROM partners WHERE code IN ('DEMO_STORE','DEMO_DIST','DEMO_INACTIVE')");
@@ -157,9 +161,12 @@ class MasterDataTest {
     private class Browser {
         final HttpClient client;
         String token;
-        Browser() {
+        Browser() throws Exception {
             client = HttpClient.newBuilder().cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ALL)).followRedirects(HttpClient.Redirect.NEVER).build();
             clients.add(client);
+            get("/login");
+            assertThat(post("/login", Map.of("username", "tst_admin", "password", SecurityTestUsers.PASSWORD), true).statusCode()).isEqualTo(302);
+            get("/");
         }
         HttpResponse<String> get(String path) throws Exception {
             var response = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path)).GET().build(), HttpResponse.BodyHandlers.ofString());
@@ -242,7 +249,7 @@ class MasterDataTest {
         assertThat(browser.post("/books", bookData(marker()), false).statusCode()).isEqualTo(403);
         var other = new Browser(); other.get("/books/new"); other.token = browser.token;
         assertThat(other.post("/books", bookData(marker()), true).statusCode()).isEqualTo(403);
-        assertThat(browser.get("/books/123/deactivate").statusCode()).isEqualTo(405);
+        assertThat(other.get("/books/123/deactivate").statusCode()).isEqualTo(405);
     }
     @Test void xssIsEscapedAndBadPageParametersReturn400() throws Exception {
         String title = marker() + "<script>alert('x')</script>"; long id = books.create(book(title));
@@ -254,4 +261,25 @@ class MasterDataTest {
         assertThat(browser.get("/books?status=bad").statusCode()).isEqualTo(400);
         assertThat(browser.get("/books/9223372036854775807/edit").statusCode()).isEqualTo(404);
     }
+    @Test void commonErrorComponentEscapesRetainedInputAndSearchOverRealJsp() throws Exception {
+        var browser = new Browser(); browser.get("/books/new");
+        String attack = "<img src=x onerror=alert(1)>";
+        var data = bookData(attack); data.put("listPrice", "-1");
+        var invalid = browser.post("/books", data, true);
+        assertThat(invalid.statusCode()).isEqualTo(200);
+        assertThat(invalid.body()).contains("VALIDATION_FAILED", "문의용 추적 ID", "&lt;img", "정가는 0 이상")
+                .doesNotContain(attack, "NumberFormatException");
+        assertThat(invalid.headers().firstValue("X-Trace-Id")).isPresent();
+        assertThat(invalid.headers().firstValue("Cache-Control")).contains("no-store");
+        String q = URLEncoder.encode(attack, StandardCharsets.UTF_8);
+        var queryError = browser.get("/partners?q=" + q + "&page=abc");
+        assertThat(queryError.statusCode()).isEqualTo(400);
+        assertThat(queryError.body()).contains("VALIDATION_FAILED", "&lt;img", "페이지는 정수로 입력하세요.")
+                .doesNotContain(attack, "NumberFormatException", "Failed to convert");
+        var missing = browser.get("/books/9223372036854775807/edit");
+        assertThat(missing.statusCode()).isEqualTo(404);
+        assertThat(missing.body()).contains("NOT_FOUND", "문의용 추적 ID", "목록에서 대상")
+                .doesNotContain("Whitelabel", "Stack Trace", "NotFoundException");
+    }
+
 }

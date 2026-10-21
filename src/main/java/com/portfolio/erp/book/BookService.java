@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import com.portfolio.erp.common.*;
 
 @Service
+@org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
 @Validated
 @Transactional(readOnly = true)
 public class BookService {
@@ -20,17 +21,20 @@ public class BookService {
     public PageResult<Book> list(@Valid PageQuery query) {
         return new PageResult<>(mapper.findAll(query), mapper.count(query), query);
     }
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Transactional public long create(@Valid BookForm form) {
         var entity = Book.from(form);
         mapper.insert(entity);
         mapper.insertInventory(entity.getId());
         return entity.getId();
     }
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Transactional public void update(long id, @Valid BookForm form) {
         var entity = Book.from(form);
         entity.setId(id);
         if (mapper.update(entity) == 0) throw new NotFoundException();
     }
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @Transactional public void deactivate(long id) {
         if (mapper.deactivate(id) == 0) throw new NotFoundException();
     }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portfolio.erp.order.OrderMapper">
+ <sql id="columns">o.id,o.order_no,o.request_key,o.partner_id,o.partner_name,o.ordered_at,o.status,o.notes,o.total_amount,o.created_by,o.fulfilled_at,o.updated_at,
+ (SELECT COALESCE(SUM(r.total_amount),0) FROM order_returns r WHERE r.order_id=o.id) returned_amount</sql>
+ <select id="find" resultType="com.portfolio.erp.order.SalesOrder">SELECT <include refid="columns"/> FROM sales_orders o WHERE o.id=#{id}</select>
+ <select id="lock" resultType="com.portfolio.erp.order.SalesOrder">SELECT <include refid="columns"/> FROM sales_orders o WHERE o.id=#{id} FOR UPDATE</select>
+ <select id="items" resultType="com.portfolio.erp.order.OrderItem">SELECT * FROM order_items WHERE order_id=#{id} ORDER BY book_id</select>
+ <select id="lockItems" resultType="com.portfolio.erp.order.OrderItem">SELECT * FROM order_items WHERE order_id=#{id} ORDER BY book_id FOR UPDATE</select>
+ <sql id="filters"><where><if test="q != ''">(o.order_no LIKE #{pattern} ESCAPE '!' OR o.partner_name LIKE #{pattern} ESCAPE '!')</if><if test="status != ''">AND o.status=#{status}</if></where></sql>
+ <select id="list" resultType="com.portfolio.erp.order.SalesOrder">SELECT <include refid="columns"/> FROM sales_orders o <include refid="filters"/> ORDER BY o.ordered_at DESC,o.id DESC LIMIT #{limit} OFFSET #{offset}</select>
+ <select id="count" resultType="long">SELECT COUNT(*) FROM sales_orders o <include refid="filters"/></select>
+ <select id="activeBooks" resultType="com.portfolio.erp.book.Book">SELECT id,title,list_price FROM books WHERE active=TRUE ORDER BY title,id</select>
+ <select id="activePartners" resultType="com.portfolio.erp.partner.Partner">SELECT id,name,code FROM partners WHERE active=TRUE ORDER BY name,id</select>
+ <select id="lockBook" resultType="com.portfolio.erp.book.Book">SELECT id,title,list_price,active FROM books WHERE id=#{id} FOR UPDATE</select>
+ <select id="lockPartner" resultType="com.portfolio.erp.partner.Partner">SELECT id,name,active FROM partners WHERE id=#{id} FOR UPDATE</select>
+ <select id="createKeyExists" resultType="boolean">SELECT EXISTS(SELECT 1 FROM sales_orders WHERE request_key=#{key})</select>
+ <insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO sales_orders(order_no,request_key,partner_id,partner_name,ordered_at,status,notes,total_amount,created_by,updated_at)
+ VALUES(#{orderNo},#{requestKey},#{partnerId},#{partnerName},#{orderedAt},#{status},#{notes},#{totalAmount},#{createdBy},#{updatedAt})</insert>
+ <insert id="insertItem" useGeneratedKeys="true" keyProperty="id">INSERT INTO order_items(order_id,book_id,book_title,quantity,unit_price,line_total) VALUES(#{orderId},#{bookId},#{bookTitle},#{quantity},#{unitPrice},#{lineTotal})</insert>
+ <update id="transition">UPDATE sales_orders SET status=#{to},updated_at=#{at},fulfilled_at=CASE WHEN #{to}='FULFILLED' THEN #{at} ELSE fulfilled_at END WHERE id=#{id} AND status=#{from}</update>
+ <select id="returnKeyExists" resultType="boolean">SELECT EXISTS(SELECT 1 FROM order_returns WHERE request_key=#{key})</select>
+ <insert id="insertReturn" useGeneratedKeys="true" keyProperty="id">INSERT INTO order_returns(order_id,request_key,reason,total_amount,actor_id,returned_at) VALUES(#{orderId},#{requestKey},#{reason},#{totalAmount},#{actorId},#{returnedAt})</insert>
+ <insert id="insertReturnItem">INSERT INTO return_items(return_id,order_item_id,quantity,amount) VALUES(#{returnId},#{itemId},#{quantity},#{amount})</insert>
+ <update id="incrementReturned">UPDATE order_items SET returned_quantity=returned_quantity+#{quantity} WHERE id=#{id} AND returned_quantity+#{quantity} &lt;= quantity</update>
+ <select id="returns" resultType="com.portfolio.erp.order.ReturnRecord">SELECT * FROM order_returns WHERE order_id=#{id} ORDER BY returned_at DESC,id DESC</select>
+</mapper>

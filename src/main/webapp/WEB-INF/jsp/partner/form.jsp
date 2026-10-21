@@ -3,9 +3,10 @@
 <div class="form-shell"><h1 class="mb-4">거래처 ${empty entityId ? '등록' : '수정'}</h1>
 <c:set var="saveAction" value="/partners"/><c:if test="${not empty entityId}"><c:set var="saveAction" value="/partners/${entityId}"/></c:if>
 <form:form modelAttribute="form" method="post" action="${saveAction}" cssClass="card card-body" htmlEscape="true">
-<input type="hidden" name="_csrf" value="<c:out value='${csrfToken}'/>">
+<input type="hidden" name="_csrf" value="<c:out value='${_csrf.token}'/>">
 <form:errors path="*" cssClass="alert alert-danger" element="div"/>
-<div class="row g-3"><div class="col-md-6"><form:label path="code" cssClass="form-label">거래처 코드</form:label><form:input path="code" cssClass="form-control" maxlength="40"/><form:errors path="code" cssClass="field-error"/></div>
+<div class="row g-3"><div class="col-md-6"><form:label path="code" cssClass="form-label">거래처 코드</form:label><form:input path="code" cssClass="form-control"
+            maxlength="40" placeholder="STORE_01"/><form:errors path="code" cssClass="field-error"/></div>
 <div class="col-md-6"><form:label path="name" cssClass="form-label">거래처명</form:label><form:input path="name" cssClass="form-control" maxlength="150"/><form:errors path="name" cssClass="field-error"/></div>
 <div class="col-md-6"><form:label path="type" cssClass="form-label">유형</form:label><form:select path="type" cssClass="form-select"><form:option value="">선택하세요</form:option><form:option value="BOOKSTORE">서점</form:option><form:option value="DISTRIBUTOR">유통사</form:option></form:select><form:errors path="type" cssClass="field-error"/></div>
 <div class="col-md-6"><form:label path="contactPerson" cssClass="form-label">담당자</form:label><form:input path="contactPerson" cssClass="form-control" maxlength="100"/><form:errors path="contactPerson" cssClass="field-error"/></div>

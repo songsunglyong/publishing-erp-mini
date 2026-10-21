@@ -1,3 +1,18 @@
 spring:
   flyway:
     locations: classpath:db/migration,classpath:db/demo
+
+# 로컬 학습 중 JSP 저장 후 새로고침으로 변경을 확인한다.
+server:
+  tomcat:
+    resource:
+      allow-caching: false
+  servlet:
+    session:
+      cookie:
+        secure: false # Loopback HTTP development only; production uses Secure.
+    jsp:
+      init-parameters:
+        development: true
+        modificationTestInterval: 0
+        recompileOnFail: true

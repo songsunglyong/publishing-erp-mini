@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portfolio.erp.report.ReportMapper">
+ <sql id="events">
+ SELECT o.fulfilled_at event_at,o.partner_id,o.partner_name,i.book_id,i.book_title,i.line_total gross_amount,0 return_amount,i.quantity shipped_quantity,0 returned_quantity
+ FROM sales_orders o JOIN order_items i ON i.order_id=o.id
+ WHERE o.fulfilled_at &gt;= #{from} AND o.fulfilled_at &lt; #{toExclusive}
+ UNION ALL
+ SELECT r.returned_at,o.partner_id,o.partner_name,i.book_id,i.book_title,0,ri.amount,0,ri.quantity
+ FROM order_returns r JOIN sales_orders o ON o.id=r.order_id JOIN return_items ri ON ri.return_id=r.id JOIN order_items i ON i.id=ri.order_item_id
+ WHERE r.returned_at &gt;= #{from} AND r.returned_at &lt; #{toExclusive}
+ </sql>
+ <sql id="totals">COALESCE(SUM(e.gross_amount),0) gross_amount,COALESCE(SUM(e.return_amount),0) return_amount,
+ COALESCE(SUM(e.gross_amount-e.return_amount),0) net_amount,COALESCE(SUM(e.shipped_quantity),0) shipped_quantity,COALESCE(SUM(e.returned_quantity),0) returned_quantity</sql>
+ <select id="summary" resultType="com.portfolio.erp.report.ReportRow">SELECT <include refid="totals"/> FROM (<include refid="events"/>) e</select>
+ <select id="monthly" resultType="com.portfolio.erp.report.ReportRow">SELECT DATE_FORMAT(e.event_at,'%Y-%m') label,<include refid="totals"/> FROM (<include refid="events"/>) e GROUP BY DATE_FORMAT(e.event_at,'%Y-%m') ORDER BY label</select>
+ <select id="books" resultType="com.portfolio.erp.report.ReportRow">SELECT MIN(e.book_title) label,<include refid="totals"/> FROM (<include refid="events"/>) e GROUP BY e.book_id ORDER BY net_amount DESC,e.book_id LIMIT 20</select>
+ <select id="partners" resultType="com.portfolio.erp.report.ReportRow">SELECT MIN(e.partner_name) label,<include refid="totals"/> FROM (<include refid="events"/>) e GROUP BY e.partner_id ORDER BY net_amount DESC,e.partner_id LIMIT 20</select>
+ <select id="lowStock" resultType="com.portfolio.erp.inventory.StockRow">SELECT i.book_id,i.quantity_on_hand,b.title,b.isbn,b.active FROM inventory i JOIN books b ON b.id=i.book_id WHERE b.active=TRUE AND i.quantity_on_hand &lt;= #{lowStock} ORDER BY i.quantity_on_hand,b.id LIMIT 20</select>
+</mapper>
