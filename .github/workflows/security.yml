@@ -43,18 +43,37 @@ jobs:
           cache: maven
       - name: Login, session, authorization, JSP and DB regression tests
         run: ./mvnw --batch-mode --no-transfer-progress clean verify
+      - name: Prepare packaged WAR for dependency scanning
+        run: |
+          mkdir -p target/security-scan
+          cp target/publishing-erp-mini-0.1.0-SNAPSHOT.war target/security-scan/
       - name: Scan packaged Java dependencies for high and critical vulnerabilities
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          scan-type: fs
-          scan-ref: target/
+          scan-type: rootfs
+          scan-ref: target/security-scan/
           scanners: vuln
           severity: HIGH,CRITICAL
           ignore-unfixed: false
           exit-code: '1'
-          format: table
-          skip-dirs: target/test-classes,target/surefire-reports
+          format: json
+          output: target/trivy-java.json
+          list-all-pkgs: true
+      - name: Require real Java package scan coverage
+        if: always()
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('target/trivy-java.json').read_text())
+          packages = [p for r in report.get('Results', []) for p in r.get('Packages', [])]
+          names = {p['Name'] for p in packages}
+          required = {'org.springframework.security:spring-security-core', 'org.mybatis:mybatis', 'org.mariadb.jdbc:mariadb-java-client'}
+          assert required <= names, 'Required runtime dependencies were not scanned'
+          print(f'Java package coverage: {len(names)} unique packages; required runtime libraries found')
+          PYTHON
       - name: Scan tracked source for secrets
+        if: always()
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
