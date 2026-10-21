@@ -7,7 +7,7 @@ import com.portfolio.erp.security.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.*;
 import org.springframework.boot.test.system.*;
 import org.springframework.context.annotation.*;
@@ -115,7 +115,7 @@ class SecurityMvcTest {
         for (String username:new String[]{"sec_user","sec_missing"}) {
             var result = mvc.perform(post("/login").with(csrf()).param("username",username).param("password","private-wrong-password")
                     .accept("application/json")).andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("LOGIN_FAILED")).andReturn();
-            var body = new com.fasterxml.jackson.databind.ObjectMapper().readTree(result.getResponse().getContentAsString());
+            var body = new tools.jackson.databind.ObjectMapper().readTree(result.getResponse().getContentAsString());
             if (message == null) message = body.get("message").asText(); else assertThat(body.get("message").asText()).isEqualTo(message);
             assertThat(result.getResponse().getContentAsString()).doesNotContain(username,"BadCredentialsException","private-wrong-password");
         }

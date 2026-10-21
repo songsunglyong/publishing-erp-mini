@@ -3,7 +3,7 @@ package com.portfolio.erp.common.error;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.*;
 import com.portfolio.erp.common.GlobalExceptionHandler;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

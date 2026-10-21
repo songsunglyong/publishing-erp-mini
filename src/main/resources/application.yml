@@ -9,10 +9,11 @@ server:
         http-only: true
         secure: true
         same-site: lax
+spring:
+  servlet:
     encoding:
       charset: UTF-8
       force: true
-spring:
   profiles:
     default: local
   datasource:
@@ -34,10 +35,10 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-server.error.include-message: never
-server.error.include-stacktrace: never
-server.error.include-binding-errors: never
-server.error.include-exception: false
+spring.web.error.include-message: never
+spring.web.error.include-stacktrace: never
+spring.web.error.include-binding-errors: never
+spring.web.error.include-exception: false
 spring.messages.encoding: UTF-8
 spring.messages.fallback-to-system-locale: false
 spring.mvc.log-request-details: false

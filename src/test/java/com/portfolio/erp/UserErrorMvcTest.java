@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.boot.test.system.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Import;
@@ -29,9 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers={BookController.class, PartnerController.class, HomeController.class, SafeErrorController.class},
-    excludeAutoConfiguration={org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class})
+    excludeAutoConfiguration={org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration.class,org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration.class,
+        org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration.class,
+        org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration.class})
 @Import({WebConfiguration.class, UserErrors.class, TraceIdFilter.class, UserErrorMvcTest.FailureController.class})
 @ExtendWith(OutputCaptureExtension.class)
 class UserErrorMvcTest {

@@ -3,7 +3,6 @@ package com.portfolio.erp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.jdbc.core.JdbcTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,9 +11,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @org.springframework.context.annotation.Import(SecurityTestUsers.class)
 class BootstrapTest {
-    @Autowired TestRestTemplate http;
     @org.springframework.boot.test.web.server.LocalServerPort int port;
     @Autowired JdbcTemplate jdbc;
+    @Autowired org.springframework.context.ApplicationContext context;
+    @Test void boot4ErrorDefaultsAndUtf8SettingsAreActuallyBound() {
+        var errors=context.getBean(org.springframework.boot.autoconfigure.web.WebProperties.class).getError();
+        assertThat(errors.getIncludeMessage().name()).isEqualTo("NEVER");
+        assertThat(errors.getIncludeStacktrace().name()).isEqualTo("NEVER");
+        assertThat(errors.getIncludeBindingErrors().name()).isEqualTo("NEVER");
+        assertThat(errors.isIncludeException()).isFalse();
+        var filters=context.getBeansOfType(org.springframework.web.filter.CharacterEncodingFilter.class);
+        assertThat(filters).hasSize(1);
+        var encoding=filters.values().iterator().next();
+        assertThat(encoding.getEncoding()).isEqualTo("UTF-8");
+        assertThat(encoding.isForceRequestEncoding()).isTrue();
+        assertThat(encoding.isForceResponseEncoding()).isTrue();
+    }
     @Test void actualMariaDbConnectionAndHealth() throws Exception {
         assertThat(jdbc.queryForObject("SELECT VERSION()", String.class)).contains("MariaDB");
         try (var browser = new TestHttpBrowser(port)) {
@@ -29,7 +41,9 @@ class BootstrapTest {
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).contains("출판 ERP Mini", "도서 관리").doesNotContain("<%@");
         }
-        assertThat(http.getForEntity("/webjars/jquery/3.7.1/jquery.min.js", String.class).getStatusCode().value()).isEqualTo(200);
+        try (var browser = new TestHttpBrowser(port)) {
+            assertThat(browser.get("/webjars/jquery/3.7.1/jquery.min.js").statusCode()).isEqualTo(200);
+        }
     }
     @Test void realLoginFailureRendersSafeKoreanJspWithoutCredentials() throws Exception {
         try (var browser = new TestHttpBrowser(port)) {
