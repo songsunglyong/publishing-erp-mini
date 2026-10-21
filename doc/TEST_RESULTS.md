@@ -1,4 +1,44 @@
-# Phase 0 · Phase 1 검증 결과
+# 검증 결과
+
+## 최신 결과 — Phase 2~4 (2026-10-20)
+
+현재 작업 트리의 `./scripts/verify.sh` → **91 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS**, 39.499초. 실행 WAR 생성 성공. 이전 날짜 결과는 아래에 이력으로 보존한다.
+
+| 테스트 | 개수 | 검증 |
+| --- | ---: | --- |
+| BootstrapTest | 4 | JSP·DB·로컬 정적 리소스 |
+| Isbn13ValidatorTest | 10 | ISBN 체크섬 |
+| MasterDataTest | 18 | 기준정보·SQL·제약·JSP·회귀 |
+| ProductionSecurityMvcTest | 1 | 운영 HTTPS·쿠키 정책 |
+| SecureCookieHttpTest | 1 | 실제 세션 쿠키 속성 |
+| SecurityMvcTest | 22 | 로그인·세션·권한·직원 객체·새 업무 경로·CSRF |
+| TransactionTest | 16 | 주문·재고·반품·월 경계 집계·동시성·롤백·실제 JSP 전체 시나리오 |
+| UserErrorMvcTest | 19 | 오류 코드·한국어·입력 보존·민감값 비노출 |
+
+### 단계별 확인
+
+- Phase 2: 확정 시 무예약, 부족 재고 전체 롤백, 중복 출고, 입고 중복, 부분/전체/초과/타 주문 품목 반품, 별도 DB 연결 2개를 사용한 출고·반품 경쟁 검증. 헤더/첫 품목 저장 후 두 번째 INSERT를 실제 DB trigger로 실패시켜 등록 원자성도 검사했다.
+- Phase 3: 1월 출고 700원/2월 반품 300원 → 기간별 700/-300, 전체 400원. 주문 단가와 월 경계, 도서/거래처 대사, 접근 차단 검증.
+- Phase 4: 현재 Git 대상 소스를 비밀·target 없이 `/private/tmp/erp-portfolio-4ttpsgva`에 복사하고 새 전용 DB에 4개 마이그레이션 적용 후 **91개/WAR 성공(33.957초)**. 실제 원격 clone과 구분한다. 현재 main 소스가 검증 사본과 일치함을 확인했고 임시 검증 DB·계정은 종료 후 정리했다.
+- Chromium 실제 화면: 새 합성 도서 2종/거래처/각 20권 입고/3·2권 주문/출고/첫 품목 1권 반품. 출고 75,000원/반품 15,000원/순매출 60,000원. 원장·보고서 포함 화면 5개, JS 오류 0개. 주문 상세와 보고서 PNG를 직접 열어 표시를 확인했다.
+- 패키징한 WAR를 8081에서 직접 시작, 실제 로그인 후 주문·주문 등록·재고·원장·보고서 JSP 5개 HTTP 200. 검증 후 해당 WAR 프로세스는 종료하고 8080 개발 앱을 유지했다.
+- 유지보수: 임시 사본만 MANDATORY→REQUIRES_NEW 변경, 기대 재고 5/실제 3으로 회귀 테스트 실패. 복구 후 같은 테스트 1개 통과. [사례](maintenance-case.md).
+- actionlint, shell 구문, MyBatis XML 및 YAML 파싱 통과. Compose의 루프백 공개/DB 비공개/healthcheck 의존성 검사, 현재 로컬 생성 암호가 Git 대상 파일에 포함되지 않음을 검사했다. 이는 Docker 검증이나 포괄적 secret 스캔을 대신하지 않는다.
+
+### 검증 중 수정한 문제
+
+실제 HTTP 시나리오의 Location이 전체 주소인데 테스트 도구가 서버 주소를 중복 연결해 실패했다. URI의 path를 추출하도록 테스트를 수정한 뒤 전체 91개를 통과했다. 반품은 잠금 대기 후 최신 누적 수량을 읽도록 품목 FOR UPDATE를 사용한다. V3 FK 추가 후 기존 시드 재실행 테스트는 해당 테스트 트랜잭션 안에서 원장을 먼저 정리하며 테스트 종료 시 롤백한다. YAML 보조 검사는 Python 패키지 부재로 실패해 기존 Java SnakeYAML로 변경하고 통과했다.
+
+### 남은 검증·위험
+
+Docker CLI가 없고 기존 사용자 보류 지시가 있어 Docker 빌드·Compose config/기동은 미실행이다. ARM64 이미지/컨테이너 내부 JSP·volume 재기동을 보장하지 않는다. 원격 소스 푸시/실제 fresh clone·Actions·Trivy도 미실행이다. **Phase 4의 엄격한 전체 gate는 남아 있다.** Flyway의 MariaDB 11.4 지원 범위 경고, 태그 기반 이미지, 백업 복원·운영 TLS 미검증 및 단일 JVM 세션 제약은 알려진 한계다.
+
+실행 출력 요약은 [test-output.txt](test-output.txt), 변경 파일·학습 설명은 [PHASE2_4.md](PHASE2_4.md), 전체 경로 목록은 [CHANGESET_PHASE2_4.md](CHANGESET_PHASE2_4.md). 기존 사용자 JSP 수정 및 이전 오류/보안 작업을 보존했고 이번 작업에서 커밋·푸시하지 않았다. `git diff --check`는 기존 사용자 book/list.jsp 끝의 공백 1건을 보고한다. 해당 문구·공백은 임의 수정하지 않았다.
+
+---
+
+## 아래는 이전 검증 이력
+
 
 - 검증일: 2026-10-17 (Asia/Seoul)
 - 환경: macOS ARM64, 메모리 8,589,934,592바이트(8GB), OpenJDK 21.0.12.1 aarch64, MariaDB 11.4.13.
@@ -46,3 +86,23 @@
 ## 남은 작업
 
 Phase 2 주문·출고·반품·재고 원장 및 동시성 테스트, Phase 3 로그인·권한·보고서, Phase 4 포트폴리오·배포 구성. Docker 배포·호스팅·공개 서비스 운영 검증은 수행하지 않았다. 외부 DB 운영·백업 복구, 다중 사용자 권한, 컨테이너 JSP 시작은 이번 범위가 아니다.
+
+## 2026-10-20 — 공통 오류 시스템 확장 최종 검증
+
+- 최종 명령: ./scripts/db-start.sh && ./scripts/verify.sh. 로그: .local/error-full-verify.log (Git 제외).
+- 전체 51개, 실패 0, 오류 0, 스킵 0. BootstrapTest 2, MasterDataTest 18, Isbn13ValidatorTest 10, UserErrorMvcTest 21. WAR 패키징 성공.
+- 신규 MockMvc: 입력·형변환 오류와 원문 보존, 중복 ISBN/거래처 코드, 업무 규칙, 404/400/405, CSRF·만료 세션, 로그인/권한 메시지 계약, DB 장애 및 MyBatis 래핑, 알 수 없는 DB 제약, 500/503 폼 보존, JSON /health, /error fallback, 한국어 강제, 추적 ID와 민감 로그 비노출.
+- 실제 MariaDB/JSP HTTP: 오류 폼의 입력 및 HTML 태그 escaping, 잘못된 검색 파라미터의 한국어 수정 안내·검색어 보존, 공통 404 안내와 추적 ID. 기존 CRUD/롤백/중복/CSRF 테스트도 유지.
+- 재시작한 demo 개발 앱: /health 정상, HTML/JSON의 없는 도서 수정 요청 404와 동일 code/traceId 확인, 거래처 목록 200 및 사용자 링크 문구 유지.
+- 초기 Mockito self-attach 정지와 신규 테스트의 Mock 재설정 오류를 수정 후 최종 전체 명령으로 재검증했다. 로그인 기능/실제 권한 검사는 아직 없으며 메시지 계약 테스트를 인증 구현 검증으로 해석하지 않는다.
+
+## 2026-10-20 — 실제 로그인·세션·접근 통제 최종 검증
+
+- 최종 전체 명령: ./scripts/db-start.sh && ./scripts/verify.sh. .local/security-full-verify.log에 기록. 전체 74개, 실패 0, 오류 0, 스킵 0, 실행 WAR 빌드 성공.
+- SecurityMvcTest 21, ProductionSecurityMvcTest 1, SecureCookieHttpTest 1, BootstrapTest 4, MasterDataTest 18, UserErrorMvcTest 19, Isbn13ValidatorTest 10.
+- 사용자 요구 10개 시나리오를 실제 MariaDB 계정과 Security 필터 체인의 MockMvc에서 검증했다. 비사용 30분과 절대 8시간은 테스트 Clock으로 경계 검증했다. 동시 로그인, Service/객체 권한, 인증 버전·비밀번호 변경·계정/IP 제한 검사도 포함한다.
+- 실제 Tomcat/JSP HTTP에서 쿠키 Secure/HttpOnly/SameSite와 COOKIE 전달, 로그인 ID 교체/중복 세션/로그아웃, 한국어 로그인 실패와 비밀번호 비노출을 확인했다.
+- 기존 자체 CSRF/만료 인터셉터의 오류 MockMvc 2개는 실제 SecurityMvcTest 검사로 이전했다. 기존 업무 회귀의 GET 변경 불가/CSRF/XSS/트랜잭션 검사는 로그인 후 유지했다.
+- 초기 로그 검사에서 Mock 세션 숫자가 시간과 겹친 검사 오류, 중복 로그인 후 이전 브라우저를 계속 쓰던 테스트 전제, 홈에서 새 CSRF 토큰을 읽지 못한 실제 문제, HTTPS 테스트의 scheme 설정을 수정한 후 최종 명령으로 통과했다.
+- 실제 개발 앱: 원본 DB 초기화 없이 V2와 최초 관리자 적용. 익명 ERP/health 차단, 관리자 로그인/세션 교체, 도서·관리자 화면 200, 로그아웃 후 차단 및 실제 비밀번호·세션 ID 로그 비노출 확인. .local/auth.env 600 및 Git 제외 확인.
+- 공식 actionlint 1.7.12 체크섬 검증 후 .github/workflows/security.yml 구문 검사 통과. GitHub 원격 Actions·Trivy·실제 HTTPS 배포는 미실행이다.

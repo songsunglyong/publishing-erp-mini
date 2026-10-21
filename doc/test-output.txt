@@ -1,0 +1,28 @@
+검증일: 2026-10-20 (Asia/Seoul)
+명령: ./scripts/verify.sh
+환경: Java 21 / macOS ARM64 / 실제 MariaDB 11.4.13
+
+BootstrapTest: Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+Isbn13ValidatorTest: Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+MasterDataTest: Tests run: 18, Failures: 0, Errors: 0, Skipped: 0
+ProductionSecurityMvcTest: Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+SecureCookieHttpTest: Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+SecurityMvcTest: Tests run: 22, Failures: 0, Errors: 0, Skipped: 0
+TransactionTest: Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
+UserErrorMvcTest: Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+
+Tests run: 91, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+Total time: 39.499 s
+
+새 소스 사본 + 빈 전용 테스트 DB: 91 tests, BUILD SUCCESS, 33.957 s
+유지보수 모의 버그: 1 test, 1 failure (expected 5, actual 3)
+유지보수 수정 후: 1 test, 0 failures, BUILD SUCCESS
+실제 Chromium: 2품목 입고/주문/출고/부분 반품/보고서, 캡처 5개, JS 오류 0개
+실행 WAR java -jar: 로그인 및 업무 JSP 5개 HTTP 200
+actionlint / shell 구문 / MyBatis XML / YAML 파싱: 통과
+Compose 기본 포트/healthcheck 정책 및 로컬 생성 암호 비포함 검사: 통과
+미실행: Docker 빌드·Compose config/기동·원격 fresh clone·GitHub Actions·Trivy·운영 배포
+
+원문 Maven 로그는 .local/phase4-final-tests.log 및 .local/fresh-full-tests.log에 보관.
+이 파일은 실제 실행 결과에서 추출한 요약이며 원문 전체 로그가 아니다.
