@@ -71,6 +71,9 @@ jobs:
           required = {'org.springframework.security:spring-security-core', 'org.mybatis:mybatis', 'org.mariadb.jdbc:mariadb-java-client'}
           assert required <= names, 'Required runtime dependencies were not scanned'
           print(f'Java package coverage: {len(names)} unique packages; required runtime libraries found')
+          for result in report.get('Results', []):
+              for vuln in result.get('Vulnerabilities', []):
+                  print(vuln['VulnerabilityID'], vuln['PkgName'], vuln['InstalledVersion'], 'fixed:', vuln.get('FixedVersion', 'not available'), vuln['Severity'])
           PYTHON
       - name: Scan tracked source for secrets
         if: always()
