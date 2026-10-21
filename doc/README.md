@@ -12,7 +12,7 @@ git clone https://github.com/songsunglyong/publishing-erp-mini.git
 cd publishing-erp-mini
 ```
 
-비공개 저장소 접근 권한이 필요하다. 현재 추가 구현은 작업 트리에 있으며 원격에 푸시하지 않았다. 아래 복제 명령으로 최신 구현을 받으려면 해당 변경이 먼저 원격에 반영되어야 한다. 이번에는 비밀/target을 제외한 새 소스 사본과 빈 DB로 검증했다.
+비공개 저장소 접근 권한이 필요하다. 2026-10-21 main에 최신 구현을 업로드했다. 원격 CI·복제 검증의 최신 결과는 RELEASE.md를 참고한다. 이전 검증은 비밀/target을 제외한 새 소스 사본과 빈 DB에서 수행했다.
 
 ## 2. 프로젝트 전용 MariaDB 시작
 

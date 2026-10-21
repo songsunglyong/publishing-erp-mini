@@ -230,3 +230,7 @@ auth/login.jsp의 로그인 버튼 문구만 ‘로그인하기’로 바꾸고 
 - 모든 변경은 CSRF 폼 토큰을 검사한다. requestKey는 중복 방지용이며 보안 토큰을 대체하지 않는다. 기술 예외·DB 인자·비밀번호·세션 ID는 출력/로그하지 않는다. JSP는 동적 값에 c:out/form escaping을 적용한다.
 - container는 루프백 Compose HTTP 시연용이며 prod와 혼용하면 시작을 거부한다. Docker 기동·이미지 취약점은 미검증이다. 기존 CI Maven verify가 새 TransactionTest와 새 경로 보안 테스트도 실행하도록 연결돼 있으나 원격 실행은 하지 않았다.
 - 현재 전체 91개 통과. 새 경로의 비로그인/USER 변경 거부, MANAGER 조정 거부, CSRF 없는 주문 등록 차단, Service 조정·주문 권한, 실제 JSP 입력 유지/XSS 및 전체 출고/반품 시나리오를 포함한다. 자세한 실행 증거는 TEST_RESULTS.md 참고.
+
+## 2026-10-21 원격 CI 분석 범위 보완
+
+실제 원격 테스트 91개/WAR 성공 후, 최초 Trivy 단계의 Java 분석 대상이 0개인 것을 원문 로그에서 발견했다. 단순한 단계 성공을 보안 검사 완료로 처리하지 않는다. 실행 WAR만 전용 폴더에 복사해 rootfs로 분석하고 JSON list-all-pkgs에서 spring-security-core/MyBatis/MariaDB JDBC가 포함됐는지 필수 검사한다. 비밀정보 검사는 앞선 단계 실패 시에도 실행한다. 실제 최종 결과는 RELEASE.md에 기록한다.

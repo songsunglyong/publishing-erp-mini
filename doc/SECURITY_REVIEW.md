@@ -29,3 +29,7 @@ Boot 3.5.16은 유지하고 tomcat.version/jackson-bom.version만 명시적으�
 근거: [Spring XsltView 안내](https://spring.io/security/cve-2026-47884/), [Spring SSE 안내](https://spring.io/security/cve-2026-47890/).
 
 현재 기능에서 해당 조건을 찾지 못했다는 검토와 보안 패치 완료는 다르다. 두 CVE에 대한 무시 규칙·임시 예외를 추가하지 않았다. 모든 취약점이 해결됐다고 보고하거나 바로 인터넷 공개하지 않는다. 사용자의 기존 Boot 3.5 학습 기준을 유지할지, Boot 4로 전환할지 확인 후 진행한다.
+
+## 패치 재검사 결과
+
+커밋 605d6eb, Actions 39539817704에서 전체 91개/WAR와 Java 60개 범위·secret 검사 단계가 성공했다. Jackson/Tomcat 8개 발견 항목은 사라졌고 spring-webmvc의 두 CVE가 남아 취약점 gate는 실패다. 패치가 전혀 적용되지 않은 상태나 분석 대상 0개 성공과 구분한다.

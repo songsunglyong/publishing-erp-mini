@@ -23,11 +23,13 @@ brew install openjdk@21 mariadb@11.4
 | Phase 0·1 | 실행 기반, 도서·거래처 관리 완료 |
 | Phase 2 | 주문·재고·출고·취소·부분 반품, 원자성·중복·동시성 검증 완료 |
 | Phase 3 | 매출 지표·보고서, 인증·세션·권한·CSRF 검증 완료 |
-| Phase 4 | 문서·실제 화면·시연·유지보수 사례·Docker 구성 준비 완료. **원격 fresh clone·Compose 기동 gate 미완료** |
+| Phase 4 | 문서·실제 화면·시연·유지보수 사례·Docker 구성 준비 완료. 원격 fresh clone 검증 완료. **Compose 기동 gate 미완료** |
 
 Docker 실행·배포·서버 호스팅은 진행하지 않았습니다. 저장소는 비공개입니다. GitHub 업로드·원격 CI·배포의 최신 상태는 [릴리스 기록](doc/RELEASE.md)을 참고하세요.
 
 ## 주요 문서
+
+- [GitHub·CI·배포 최신 기록](doc/RELEASE.md) · [무료 우선 호스팅 후보](doc/HOSTING_PLAN.md)
 
 - [설치·실행·종료·문제 해결·백업 절차](doc/README.md)
 - [실제 검증 결과·변경 파일 목록](doc/TEST_RESULTS.md) · [기능별 학습·PHP 비교](doc/PHASE2_4.md)
@@ -36,6 +38,10 @@ Docker 실행·배포·서버 호스팅은 진행하지 않았습니다. 저장�
 - [실패 테스트→수정→성공 유지보수 사례](doc/maintenance-case.md)
 - [Docker 준비와 남은 검증](doc/CONTAINERS.md)
 - [프로젝트](doc/PROJECT.md) · [설계 결정](doc/DECISIONS.md) · [할 일](doc/TODO.md) · [변경 기록](doc/CHANGELOG.md)
+
+## 배포 전 확인
+
+현재 GitHub 업로드와 실행 검증은 완료했지만, 의존성 검사에서 발견된 Spring 항목 2개에 대한 버전 방향 결정이 남아 있어 인터넷 공개 배포는 아직 하지 않았습니다. Tomcat/Jackson 패치는 적용했고 회귀 테스트를 통과했습니다. [보안 검토](doc/SECURITY_REVIEW.md)와 [릴리스 기록](doc/RELEASE.md)을 확인하세요.
 
 ## 실제 화면
 
