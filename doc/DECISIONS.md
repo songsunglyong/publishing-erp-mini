@@ -121,3 +121,12 @@
 - 매출은 출고일에 더하고 반품일에 차감하는 기간 흐름 지표다. 한국 시간·종료일 포함, 금액 합계 BigDecimal, 순매출 금액 순위 상위 20개. 현재 부족 재고에는 날짜 필터를 적용하지 않는다. 결제/세금/회계 지표는 범위 밖이다.
 - Phase 4의 현재 소스 사본 검증과 원격 Git clone·Compose 기동 검증을 구분한다. 비공개 저장소는 공개로 바꾸지 않는다. 실행하지 않은 Docker/Trivy/원격 CI는 통과로 기록하지 않는다.
 - Docker는 Java21 실행 WAR/non-root, DB 포트 비공개, 루프백 앱 공개·DB healthcheck·named volume·환경 필수 암호 구성으로 준비한다. container는 로컬 HTTP 시연 전용이며 prod 혼용을 거부한다. 실제 운영 구성으로 제시하지 않는다.
+
+## 2026-10-21 — 사용자 승인에 따른 Boot 4 전환
+
+- 기존 3.5 기준보다 최신 사용자 요청 `boot4 로 해줘`를 우선한다. Boot 4.1.1, MyBatis Starter 4.1.0, Security 7.1.1, Framework 7.0.9, Java 21을 기준으로 검증한다. MyBatis 공식 4.0+ 호환 표와 Maven Central 배포를 확인했다.
+- JSP는 공식 지원되는 실행 WAR를 유지한다. React/Thymeleaf/JPA로 바꾸지 않는다. 기존 SQL/마이그레이션/재고·반품 규칙과 데이터는 보존한다.
+- Boot 4의 webmvc/security-test/flyway starter와 새 테스트/오류 API 패키지를 사용한다. 애플리케이션의 JSON 처리는 Jackson 3으로 전환한다. Jackson 2 호환 모드를 임시 도입하지 않는다. 제3자 의존성이 사용하는 Jackson 2 BOM은 2.21.7로 패치한다.
+- Boot BOM의 Tomcat 11.0.24 대신 같은 Servlet 6.1 계열의 정식 보안 패치 11.0.27을 사용한다. 기존 Tomcat 10 override를 그대로 가져오지 않는다.
+- 오류 비노출은 spring.web.error, UTF-8 강제는 spring.servlet.encoding으로 이관하고 실제 바인딩을 자동 테스트로 검증한다. 오류 전용 MVC slice는 Boot 4의 ServletWebSecurityAutoConfiguration을 제외하여 기존 테스트 경계를 유지하며 실제 보안 검증은 별도 테스트에 그대로 둔다.
+- 이전 CI 실패 이력과 새 전환 검증을 분리한다. 무시 목록으로 CVE를 숨기지 않는다. 서버 계정 가입/배포는 보류한다.

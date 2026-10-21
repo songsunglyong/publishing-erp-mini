@@ -1,3 +1,30 @@
+Boot 4 최종 검증 — 2026-10-21
+소스 커밋: 25f7f46
+Boot 4.1.1 / Framework 7.0.9 / Security 7.1.1 / MyBatis Starter 4.1.0
+Tomcat 11.0.27 / Jackson 3.1.7 / Java 21 / 실제 MariaDB 11.4.13
+명령: ./scripts/verify.sh
+
+BootstrapTest: Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+Isbn13ValidatorTest: Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+MasterDataTest: Tests run: 18, Failures: 0, Errors: 0, Skipped: 0
+ProductionSecurityMvcTest: Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+SecureCookieHttpTest: Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+SecurityMvcTest: Tests run: 22, Failures: 0, Errors: 0, Skipped: 0
+TransactionTest: Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
+UserErrorMvcTest: Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+
+Tests run: 92, Failures: 0, Errors: 0, Skipped: 0; BUILD SUCCESS; 28.917 s
+실제 GitHub clone 25f7f46 + 빈 DB: 92 tests, BUILD SUCCESS, 32.085 s
+원격 Actions 39544325071: SUCCESS
+Java package coverage: 71 unique packages; required runtime libraries found
+HIGH/CRITICAL vulnerability gate: SUCCESS
+Source secret scan step: SUCCESS
+취약점 무시 규칙 추가 없음
+실제 WAR/JSP와 Chromium 업무 화면·jQuery·404 안내 확인, JS 오류 0
+Docker 기동·호스팅·결제 미실행
+
+아래는 이전 버전 검증 이력
+---
 검증일: 2026-10-20 (Asia/Seoul)
 명령: ./scripts/verify.sh
 환경: Java 21 / macOS ARM64 / 실제 MariaDB 11.4.13

@@ -1,6 +1,6 @@
 # 구조와 실행 흐름
 
-Java 21 / Spring Boot 3.5.16 / Security 6.5.11 / MyBatis XML / JSP·JSTL / jQuery / MariaDB 11.4를 사용한다. Controller는 입력·화면, Service는 업무 규칙·트랜잭션, Mapper/XML은 SQL, JSP는 표시를 담당한다. JSP에 JDBC나 SQL을 넣지 않는다.
+Java 21 / Spring Boot 4.1.1 / Security 7.1.1 / MyBatis XML / JSP·JSTL / jQuery / MariaDB 11.4를 사용한다. Controller는 입력·화면, Service는 업무 규칙·트랜잭션, Mapper/XML은 SQL, JSP는 표시를 담당한다. JSP에 JDBC나 SQL을 넣지 않는다.
 
 ```mermaid
 flowchart LR
@@ -71,3 +71,7 @@ PHP 비교: 라우터/컨트롤러 → 업무 함수 → PDO prepared statement 
 - 월별 합계, 도서별·거래처별 순매출 상위 20개, 사용 도서의 현재 부족 재고 하위 20개. 순위는 순매출 금액 기준이다. 상위 20개 합계를 전체 총액으로 해석하지 않는다.
 - 현재 부족 재고는 과거 날짜 조건을 적용하지 않는다. 임계값 이하를 표시한다.
 - 금액은 원 단위 Long/BIGINT로 저장하고 SQL 합계는 BigDecimal로 받는다. 결제·회계·부가세 매출이 아니다.
+
+## Boot 4 모듈 이관
+
+webmvc/security-test/flyway 스타터와 JSON 3을 사용한다. MVC/보안/오류 테스트의 import와 설정 키를 이관했고 업무 흐름·SQL·스키마는 유지했다. 상세 변경은 BOOT4_MIGRATION.md를 참고한다.

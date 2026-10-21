@@ -9,11 +9,11 @@
 - Phase 0·1 완료: ARM64 Java 21, 실행 WAR/JSP, 네이티브 MariaDB, 도서·거래처 CRUD·검색·상태·페이지네이션.
 - Phase 2 완료: 다품목 주문, 주문 당시 단가/명칭, 확정·출고·취소, 입고·ADMIN 조정·원장, 전체/부분 반품, 중복 방지, 잠금·원자적 롤백.
 - Phase 3 완료: 월별/도서별/거래처별 매출과 현재 부족 재고. 로그인·ADMIN/MANAGER/USER·CSRF·세션·직원 객체 권한·공통 오류. 실제 금액 대사·접근 차단 검증.
-- Phase 4 산출물 작성·네이티브 검증 완료: README/ERD/구조/시연 대본/실제 화면 5개/유지보수 실패→성공 사례/Dockerfile·Compose. 원격 fresh clone 검증은 완료했으며 **Compose 기동 gate는 미완료**. Docker 실행과 서버 호스팅은 아직 하지 않았다. 사용자는 무료 우선 호스팅을 요청했으나 계정/서버가 없는 상태다.
-- 전체 자동 테스트 91개, 실행 WAR 빌드, 새 소스 사본+빈 DB 마이그레이션·전체 검증 성공. 세부 결과는 TEST_RESULTS.md.
-- 버전: Java 21.0.12.1 / Boot 3.5.16 / Security 6.5.11 / MyBatis Starter 3.0.5 / MariaDB 11.4.13 / Maven Wrapper 3.9.11.
+- Phase 4 산출물 작성·네이티브 검증 완료: README/ERD/구조/시연 대본/실제 화면 8개/유지보수 실패→성공 사례/Dockerfile·Compose. 원격 fresh clone 검증은 완료했으며 **Compose 기동 gate는 미완료**. Docker 실행과 서버 호스팅은 아직 하지 않았다. 사용자는 무료 우선 호스팅을 요청했으나 계정/서버가 없는 상태다.
+- 전체 자동 테스트 92개, 실행 WAR 빌드, 새 소스 사본+빈 DB 마이그레이션·전체 검증 성공. 세부 결과는 TEST_RESULTS.md.
+- 버전: Java 21.0.12.1 / Boot 4.1.1 / Security 7.1.1 / MyBatis Starter 4.1.0 / MariaDB 11.4.13 / Maven Wrapper 3.9.11.
 - Mac ARM64 RAM 8GB: 네이티브 DB 버퍼 128MB, 앱 힙 768MB, Maven 384MB, 테스트 512MB·단일 fork, 풀 앱 5/테스트 2개.
-- GitHub: https://github.com/songsunglyong/publishing-erp-mini (비공개). 2026-10-21 main에 구현·문서 업로드 완료(5310b72). 원격 CI·배포의 최신 결과는 RELEASE.md 참고.
+- GitHub: https://github.com/songsunglyong/publishing-erp-mini (비공개). 2026-10-21 main에 구현·문서 첫 업로드(5310b72)와 Boot 4 최종 코드(25f7f46) 반영. 원격 CI·배포의 최신 결과는 RELEASE.md 참고.
 
 ## 실제 구조
 
@@ -46,6 +46,12 @@ publishing-erp-mini/
 
 최신 요청 범위의 기능 구현은 완료했다. 이후에는 PHASE2_4.md를 따라 작은 단위로 학습하고 이해를 확인한다. 배포/호스팅·공개 전환·원격 푸시는 별도 요청 대상이다. Phase 4 미검증 항목과 운영 한계는 TODO.md 및 CONTAINERS.md에 남겼다.
 
-## 2026-10-21 릴리스·배포 전 점검
+## 2026-10-21 릴리스·배포 전 점검 이력 (Boot 4 전환 전)
 
 원격 GitHub 업로드와 실제 fresh clone 91개/WAR 검증을 완료했다. CI의 Java 분석 누락을 보완한 뒤 의존성 보안 항목이 발견돼 Tomcat 10.1.61/Jackson BOM 2.21.7로 패치했다(로컬 91개/WAR 통과). Spring webmvc 2개 보안 항목과 Boot 3.5/4 방향 결정이 남아 있어 공개 배포 준비 완료로 표시하지 않는다. RELEASE.md/SECURITY_REVIEW.md 참고. 서버는 없고 무료 우선 호스팅 계정 준비가 필요하다.
+
+## Boot 4 전환 — 현재 기준
+
+사용자가 Boot 4 전환을 승인했다. Framework 7.0.9·Security 7.1.1·MyBatis Starter 4.1.0·Tomcat 11.0.27·Jackson 3.1.7·Flyway 12.4.0을 사용한다. 기존 업무·데이터·JSP WAR를 유지하고 설정/테스트/API import를 이관했다. 최종 로컬 92개/WAR 성공(28.917초). 초기 원격 검사에서 이전 Spring CVE는 사라졌고 기본 Jackson 3.1.5는 3.1.7로 패치했다. 최종 원격 결과는 RELEASE.md 참고. 상세 파일·학습 설명은 BOOT4_MIGRATION.md에 있다.
+
+최종 확인: 25f7f46의 원격 CI 39544325071 전체 성공(92개/WAR, Java 71개 분석·HIGH/CRITICAL gate·secret 검사). 실제 최신 clone+빈 DB에서도 92개/WAR 성공. 이전 버전 선택과 Spring/Jackson 발견 항목은 해결됐다. 계정/호스팅은 계속 보류하며 다음 작업은 Boot 4 학습 이해 확인이다.

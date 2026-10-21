@@ -307,3 +307,11 @@ PHP 웹 개발 경험을 기준으로 Java·Spring Boot·JSP를 설명한다. �
 - order/form.jsp:13에서 버튼 문구가 작성 상태로 저장 → 작성 저장으로 바뀐 것을 확인했다. form의 POST /orders와 버튼 저장 동작은 그대로다. 사용자 변경을 대신 수정하지 않았다. 이번 확인은 저장된 소스 기준이며 실제 HTTP 반영은 확인하지 않았다.
 - 설명: 확정은 주문 상태만 변경, 출고는 재고 차감. A 5권/B 0권에서 A 2권/B 3권 출고는 모두 실패하여 A 5/B 0과 확정 상태 유지. PHP PDO의 같은 트랜잭션에서 rollback하는 것과 같다. 주문 당시 unit_price를 별도 보존해 이후 현재 정가와 반품 금액을 분리한다.
 - 학습 과제(주문 버튼 문구 변경)는 소스 확인 완료. 추가 구현·다음 주제 진행 없음. 앱 코드를 변경하지 않아 전체 테스트는 재실행하지 않았다.
+
+## 현재 주제 — Boot 4 전환 (2026-10-21)
+
+사용자가 Boot 4 전환을 승인했다. 기존 업무 코드는 유지하고 Boot 4.1.1·Security 7.1.1·Framework 7.0.9·MyBatis Starter 4.1.0·Tomcat 11로 전환했다. 초기 92개/WAR와 실제 브라우저 검증을 통과했다. 원격에서 이전 Spring CVE는 사라졌으나 기본 Jackson 3.1.5의 보안 항목을 발견해 3.1.7 패치를 검증 중이다. 최종 상태는 RELEASE.md/BOOT4_MIGRATION.md에 기록한다.
+
+PHP 비교는 Composer 프레임워크/관련 패키지 갱신과 기존 SQL 보존으로 설명한다. 새 MVC/보안/Flyway 스타터, Jackson 3, Boot 4 설정 키·테스트 패키지 역할을 문서에 정리했다. 과제 1개는 pom.xml의 name 표시만 변경해 Maven 출력을 확인하는 것이다. 대신 수행하지 않았다. 복습 3개는 MyBatis 호환성, JSP WAR, 기능 테스트와 보안 검사 구분이다. 이해 확인을 받지 않았으며 서버 가입은 사용자가 더 생각하기로 해 보류한다.
+
+Boot 4 최종 결과: Jackson 3.1.7까지 적용한 로컬 92개/WAR, 실제 최신 GitHub clone+빈 DB 92개/WAR, 원격 92개·Java 71개 분석·HIGH/CRITICAL/secret 검사 모두 성공. 이전 Spring/Jackson 발견 항목은 사라졌다. 코드·데이터·사용자 문구를 보존하고 서버 가입은 보류한다. BOOT4_MIGRATION.md의 과제/복습 답변은 아직 받지 않았다.

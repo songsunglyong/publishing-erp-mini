@@ -1,6 +1,6 @@
 # 출판 ERP Mini
 
-Java 21 · Spring Boot · MyBatis XML · JSP/JSTL · jQuery · MariaDB로 만든 한국어 출판 업무 ERP 학습·포트폴리오입니다. 도서·거래처, 다품목 주문·출고·부분 반품, 재고 원장·매출 보고서와 세션 기반 인증을 구현했습니다. 합성 데이터만 사용합니다.
+Java 21 · Spring Boot 4.1.1 · MyBatis XML · JSP/JSTL · jQuery · MariaDB로 만든 한국어 출판 업무 ERP 학습·포트폴리오입니다. 도서·거래처, 다품목 주문·출고·부분 반품, 재고 원장·매출 보고서와 세션 기반 인증을 구현했습니다. 합성 데이터만 사용합니다.
 
 ## Mac ARM64 / RAM 8GB 빠른 시작
 
@@ -14,7 +14,7 @@ brew install openjdk@21 mariadb@11.4
 
 [로그인](http://127.0.0.1:8080/login) 정보는 Git 제외·권한 600인 `.local/auth.env`를 로컬 편집기에서 확인하세요. 공유 기본 비밀번호는 없습니다. 비밀번호를 변경한 뒤에는 변경한 값을 사용합니다. `demo`는 가상 도서·거래처 각 3개를 추가하며, 주문 시연은 [대본](doc/DEMO.md)을 따릅니다.
 
-전체 자동 테스트 **91개 통과**, 실행 WAR 빌드 성공. 현재 소스를 비밀/target 없이 복사한 별도 폴더와 빈 테스트 DB에서도 91개를 통과했습니다. 실제 Chromium에서 2품목 입고→주문→출고→부분 반품→보고서를 확인했습니다. 네이티브 앱은 127.0.0.1에만 바인딩합니다.
+전체 자동 테스트 **92개 통과**, 실행 WAR 빌드 성공. 현재 소스를 비밀/target 없이 복사한 Boot 4 최종 코드를 GitHub에서 새로 복제해 빈 테스트 DB에서도 92개를 통과했습니다. 실제 Chromium에서 2품목 입고→주문→출고→부분 반품→보고서를 확인했습니다. 네이티브 앱은 127.0.0.1에만 바인딩합니다.
 
 ## 단계별 상태
 
@@ -31,6 +31,7 @@ Docker 실행·배포·서버 호스팅은 진행하지 않았습니다. 저장�
 
 - [GitHub·CI·배포 최신 기록](doc/RELEASE.md) · [무료 우선 호스팅 후보](doc/HOSTING_PLAN.md)
 
+- [Boot 4 전환·파일 역할·PHP 비교·학습](doc/BOOT4_MIGRATION.md)
 - [설치·실행·종료·문제 해결·백업 절차](doc/README.md)
 - [실제 검증 결과·변경 파일 목록](doc/TEST_RESULTS.md) · [기능별 학습·PHP 비교](doc/PHASE2_4.md)
 - [아키텍처·경로·매출 지표](doc/architecture.md) · [ERD](doc/erd.md)
@@ -41,11 +42,11 @@ Docker 실행·배포·서버 호스팅은 진행하지 않았습니다. 저장�
 
 ## 배포 전 확인
 
-현재 GitHub 업로드와 실행 검증은 완료했지만, 의존성 검사에서 발견된 Spring 항목 2개에 대한 버전 방향 결정이 남아 있어 인터넷 공개 배포는 아직 하지 않았습니다. Tomcat/Jackson 패치는 적용했고 회귀 테스트를 통과했습니다. [보안 검토](doc/SECURITY_REVIEW.md)와 [릴리스 기록](doc/RELEASE.md)을 확인하세요.
+사용자 요청으로 Boot 4.1.1과 호환 MyBatis/Security, Tomcat 11·Jackson 3으로 전환했습니다. 로컬 92개 테스트와 실제 JSP/WAR 검증을 통과했습니다. 최종 원격 92개 테스트·Java 71개 패키지 분석·HIGH/CRITICAL 취약점 검사·비밀정보 검사까지 통과했습니다. 인터넷 공개 배포는 아직 하지 않았습니다. [보안 검토](doc/SECURITY_REVIEW.md)와 [릴리스 기록](doc/RELEASE.md)을 확인하세요.
 
 ## 실제 화면
 
-주문 당시 단가를 저장하며 출고 완료 후 품목별 반품을 처리합니다. 보고서는 출고 매출과 반품 차감을 구분합니다.
+주문 등록에서 단가·수량을 입력하고, 보고서에서 출고 매출과 반품 차감을 구분합니다. Boot 4에서 실제 캡처한 화면입니다. 전체 출고·반품 시연은 DEMO.md를 참고하세요.
 
-![출고·부분 반품](doc/screenshots/03-order-return.png)
-![매출 보고서](doc/screenshots/05-sales-report.png)
+![Boot 4 주문 등록](doc/screenshots/06-boot4-order.png)
+![Boot 4 매출 보고서](doc/screenshots/07-boot4-report.png)

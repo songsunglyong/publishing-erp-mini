@@ -35,3 +35,17 @@ Spring/JSP 신입 공통 초안은 APPLICATION_DRAFT.md다. PHP·Android·iOS �
 - CVE-2026-47890, spring-webmvc 6.2.19, OSS 수정 7.0.9.
 
 스캐너 등급과 개발사 공식 등급/노출 조건이 다르므로 SECURITY_REVIEW.md의 근거를 함께 본다. 서버 계정과 Spring 버전 방향에 대한 사용자 답변이 필요하다. 지원서 초안은 준비됐지만 실제 제출·공개 배포는 하지 않았다.
+
+## 최신 결과 — Boot 4 전환 완료 (2026-10-21)
+
+사용자 승인에 따라 Boot 4.1.1·Framework 7.0.9·Security 7.1.1·MyBatis Starter 4.1.0으로 전환했다. JSP/기존 SQL·데이터·Java 21은 유지했다. Tomcat 11.0.27/Jackson 3.1.7의 최종 소스 커밋은 25f7f46이다. 초기 전환은 5667988에 있다.
+
+- 로컬: 92개, 실패/오류/건너뜀 0, WAR 성공(28.917초). .local/boot4-final-tests.log.
+- 실제 GitHub 새 복제: 25f7f46, 빈 전용 DB 마이그레이션·92개/WAR 성공(32.085초). 임시 DB/계정 정리 완료. .local/boot4-github-clone-verify.log.
+- [최종 원격 CI 39544325071](https://github.com/songsunglyong/publishing-erp-mini/actions/runs/39544325071): **전체 성공**. 92개/WAR, 고유 Java 패키지 71개·필수 라이브러리 분석 범위, 설정된 HIGH/CRITICAL 취약점 gate 및 source secret 검사 단계 성공.
+- 이전 Spring CVE 2개와 Jackson 항목은 최종 검사에서 보고되지 않았다. 무시 목록·예외 규칙을 추가하지 않았다. 모든 가능한 보안 결함이 없음을 보장하는 결과는 아니다.
+- 실제 WAR 로그인/JSP 5개와 Chromium 품목 추가/삭제·한국어 404·업무 화면, JS 오류 0개를 확인했다. 새 캡처 06~08을 제공한다. 8080 개발 앱도 최종 패치로 재시작했다.
+- 초기 CI 실패/패치 기록은 위에 이력으로 보존한다. 더 이상 Boot 3.5 유지/Boot 4 선택 답변을 기다리는 상태가 아니다.
+- 서버 가입은 사용자가 더 생각하기로 했다. Docker 기동·서버 생성·결제·외부 호스팅은 수행하지 않았다.
+
+상세 파일/학습 설명: BOOT4_MIGRATION.md. CI의 actions/checkout·setup-java v4는 Node/지원 중단 경고를 출력했으나 이번 실행은 Node 24로 성공했다. 향후 SHA 고정 버전 갱신을 별도 점검한다.

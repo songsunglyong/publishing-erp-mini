@@ -2,7 +2,7 @@
 
 ## 검증한 환경
 
-macOS ARM64(aarch64), RAM 8GB, OpenJDK 21.0.12.1, MariaDB 11.4.13. Spring Boot 3.5.16, Spring Security 6.5.11, MyBatis Starter 3.0.5, Maven 3.9.11 / Wrapper 3.3.4를 사용한다. Docker와 전역 Maven 설치는 필요 없다. 최초 빌드는 Maven Central 네트워크 접근이 필요하다.
+macOS ARM64(aarch64), RAM 8GB, OpenJDK 21.0.12.1, MariaDB 11.4.13. Spring Boot 4.1.1, Spring Security 7.1.1, MyBatis Starter 4.1.0, Maven 3.9.11 / Wrapper 3.3.4를 사용한다. Docker와 전역 Maven 설치는 필요 없다. 최초 빌드는 Maven Central 네트워크 접근이 필요하다.
 
 ## 1. 설치와 복제
 
@@ -169,4 +169,8 @@ chmod 600 .local/publishing-erp-backup.sql
 
 ## 현재 한계
 
-단일 JVM/단일 회사·합성 데이터 시연이다. 세션은 앱 재시작 시 사라지며 서버 여러 대의 동시 로그인 제한은 지원하지 않는다. 결제·회계·운송장·재고 예약/배정·주문 수정·통화/세금은 범위 밖이다. 보고서 정렬은 순매출 금액 기준이며 현재 재고와 기간 매출을 구분한다. Flyway는 MariaDB 11.4에 검증 범위 경고를 출력하지만 실제 마이그레이션·통합 테스트는 통과했다. 운영 적용 전에 도구 지원 범위·취약점·백업 복원을 재검토한다.
+단일 JVM/단일 회사·합성 데이터 시연이다. 세션은 앱 재시작 시 사라지며 서버 여러 대의 동시 로그인 제한은 지원하지 않는다. 결제·회계·운송장·재고 예약/배정·주문 수정·통화/세금은 범위 밖이다. 보고서 정렬은 순매출 금액 기준이며 현재 재고와 기간 매출을 구분한다. Boot 4에서 Flyway 12.4.0으로 갱신했고 기존 이력 검증·빈 DB CI 마이그레이션을 통과했다. 운영 적용 전에 도구 지원 범위·취약점·백업 복원을 재검토한다.
+
+## Boot 4 전환
+
+기존 실행 명령을 유지한다. Tomcat 11.0.27·Framework 7.0.9·Jackson 3.1.7이며 오류/인코딩 설정은 spring.web.error 및 spring.servlet.encoding으로 이관했다. 전환 이유·파일·검증·학습 과제는 BOOT4_MIGRATION.md, 원격 보안 검사는 RELEASE.md 참고. 이전 버전의 결과는 검증 이력으로만 해석한다.

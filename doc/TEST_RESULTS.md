@@ -1,5 +1,14 @@
 # 검증 결과
 
+## 최신 결과 — Boot 4 전환 (2026-10-21)
+
+Boot 4.1.1/MyBatis Starter 4.1.0/Security 7.1.1/Framework 7.0.9, Tomcat 11.0.27/Jackson 3.1.7. `./scripts/verify.sh` → **92 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS**, 28.917초. 기존 91개와 오류/UTF-8 실제 바인딩 검증 1개다. .local/boot4-final-tests.log.
+
+초기 Boot 4 원격 5667988도 빈 DB에서 92개/WAR를 통과했고 이전 Spring CVE는 사라졌으나 기본 Jackson 3.1.5 항목이 보고됐다. 3.1.7 패치를 적용한 최종 25f7f46 원격 결과는 RELEASE.md에 기록한다. 무시 목록을 추가하지 않았다.
+
+실제 실행 WAR의 로그인·JSP 5개 HTTP 200, Chromium 품목 추가/삭제·업무 화면·한국어 안전 404와 JavaScript 오류 0개를 확인했다. 캡처 06~08을 추가했다. 기존 사용자 작성 저장 문구를 보존했고 마이그레이션 SQL·업무 데이터는 수정/초기화하지 않았다. Docker/호스팅은 미실행이다. 아래 이전 버전 결과와 미해결 표시는 당시 이력이다.
+
+
 ## 2026-10-21 보안 패치 후 검증
 
 Tomcat 10.1.61/Jackson BOM 2.21.7 적용 후 전체 91개(실패/오류/건너뜀 0), WAR 빌드 성공(25.877초). 패키지 내 버전 확인과 java -jar WAR의 실제 로그인/JSP 5개 HTTP 200을 확인했다. Spring webmvc의 2개 보안 항목은 여전히 검토가 필요하며 최종 CI 상태를 RELEASE.md에 기록한다. `91개 통과`는 모든 의존성 취약점 해결을 의미하지 않는다.
@@ -120,3 +129,9 @@ Phase 2 주문·출고·반품·재고 원장 및 동시성 테스트, Phase 3 �
 ## 2026-10-21 원격 최종 검사
 
 커밋 605d6eb의 Actions 39539817704: 91개(실패/오류/건너뜀 0)/WAR 성공, Java 60개 범위 검사와 source secret 검사 단계 성공. 의존성 gate는 Spring CVE-2026-47884/47890 두 항목으로 실패. 앞선 Jackson/Tomcat 8개 항목은 패치 재검사에서 사라짐. 전체 CI 통과로 보고하지 않는다. 실제 배포는 없다.
+
+## Boot 4 최종 원격·새 복제 검증
+
+25f7f46의 Actions 39544325071 전체 성공: 92개/WAR, 고유 Java 패키지 71개·필수 라이브러리 실제 분석, HIGH/CRITICAL gate와 source secret 검사 단계 성공. 기존 Spring/Jackson 항목은 사라졌으며 무시 규칙 없음.
+
+실제 GitHub clone 25f7f46을 /private/tmp/erp-github-clone-7d_ygl9h에 받아 빈 전용 DB에서 92개/WAR 성공(32.085초). 임시 DB·계정 정리 완료. 최종 코드를 반영한 8080 개발 앱의 실제 Chromium도 업무 화면/품목 추가·삭제/한국어 404, JS 오류 0개를 확인했다.

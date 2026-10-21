@@ -234,3 +234,7 @@ auth/login.jsp의 로그인 버튼 문구만 ‘로그인하기’로 바꾸고 
 ## 2026-10-21 원격 CI 분석 범위 보완
 
 실제 원격 테스트 91개/WAR 성공 후, 최초 Trivy 단계의 Java 분석 대상이 0개인 것을 원문 로그에서 발견했다. 단순한 단계 성공을 보안 검사 완료로 처리하지 않는다. 실행 WAR만 전용 폴더에 복사해 rootfs로 분석하고 JSON list-all-pkgs에서 spring-security-core/MyBatis/MariaDB JDBC가 포함됐는지 필수 검사한다. 비밀정보 검사는 앞선 단계 실패 시에도 실행한다. 실제 최종 결과는 RELEASE.md에 기록한다.
+
+## Boot 4 전환 후 현재 기준 — 2026-10-21
+
+사용자가 Boot 4 전환을 승인했다. Boot 4.1.1/Framework 7.0.9/Security 7.1.1, MyBatis Starter 4.1.0, Tomcat 11.0.27, Jackson 3.1.7을 사용한다. 보안 체인·세션·역할·직원 객체 권한·CSRF 정책은 유지하며 테스트 패키지/JSON 파서와 기본 MVC slice 제외 설정만 이관했다. 오류 비노출은 spring.web.error, 강제 UTF-8은 spring.servlet.encoding이며 실제 바인딩을 신규 테스트로 확인한다. 로컬 최종 92개/WAR 성공. 이전 6.5/Boot 3 보안 검토·실패는 이력이며 최신 원격 상태는 RELEASE.md를 따른다. 무시 목록은 추가하지 않았다.
