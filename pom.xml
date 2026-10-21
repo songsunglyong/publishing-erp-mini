@@ -9,6 +9,8 @@
     <mybatis.version>4.1.0</mybatis.version>
     <!-- Boot 4의 Servlet 6.1/Tomcat 11을 유지하면서 정식 보안 패치를 적용한다. -->
     <tomcat.version>11.0.27</tomcat.version>
+    <!-- 기본 Jackson 3.1.5에서 발견된 JSON 보안 항목의 동일 계열 패치. -->
+    <jackson-bom.version>3.1.7</jackson-bom.version>
     <!-- Jackson 3 기본값과 별개로 제3자 라이브러리의 Jackson 2 의존성도 패치한다. -->
     <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
   </properties>
