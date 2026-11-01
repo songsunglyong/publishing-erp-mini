@@ -251,6 +251,25 @@ class MasterDataTest {
         assertThat(other.post("/books", bookData(marker()), true).statusCode()).isEqualTo(403);
         assertThat(other.get("/books/123/deactivate").statusCode()).isEqualTo(405);
     }
+    @Test @Transactional void sqlInjectionTextRemainsLiteralSearchData() {
+        String attack = "' OR 1=1 --";
+        String title = marker() + attack;
+        long id = books.create(book(title));
+        books.create(book(marker()));
+        var partnerForm = partner(marker());
+        partnerForm.setName("점검 거래처 " + attack);
+        long partnerId = partners.create(partnerForm);
+        partners.create(partner(marker()));
+
+        // SQL 조건이 되면 다른 행까지 조회된다. 실제 MariaDB에서 문자열 한 행만 찾아야 한다.
+        assertThat(books.list(query(attack, 1, "")).getItems())
+                .extracting(Book::getId).containsExactly(id);
+        assertThat(books.list(query(attack, 1, "")).getTotal()).isEqualTo(1);
+        assertThat(partners.list(query(attack, 1, "")).getItems())
+                .extracting(Partner::getId).containsExactly(partnerId);
+        assertThat(partners.list(query(attack, 1, "")).getTotal()).isEqualTo(1);
+        assertThat(books.find(id).getTitle()).isEqualTo(title);
+    }
     @Test void xssIsEscapedAndBadPageParametersReturn400() throws Exception {
         String title = marker() + "<script>alert('x')</script>"; long id = books.create(book(title));
         var browser = new Browser();

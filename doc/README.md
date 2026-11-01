@@ -2,7 +2,7 @@
 
 ## 검증한 환경
 
-macOS ARM64(aarch64), RAM 8GB, OpenJDK 21.0.12.1, MariaDB 11.4.13. Spring Boot 4.1.1, Spring Security 7.1.1, MyBatis Starter 4.1.0, Maven 3.9.11 / Wrapper 3.3.4를 사용한다. Docker와 전역 Maven 설치는 필요 없다. 최초 빌드는 Maven Central 네트워크 접근이 필요하다.
+macOS ARM64(aarch64), RAM 8GB, Eclipse Temurin 21.0.13+9, MariaDB 11.4.13. Spring Boot 4.1.1, Spring Security 7.1.1, MyBatis Starter 4.1.0, Maven 3.9.11 / Wrapper 3.3.4를 사용한다. Docker와 전역 Maven 설치는 필요 없다. 최초 빌드는 Maven Central 네트워크 접근이 필요하다. [Java 패치·설치 위치·검증](JAVA_PATCH.md)에 따라 JDK를 준비하고 `./scripts/java-info.sh`로 전체 빌드를 확인한다. 이전 Homebrew 21.0.12.1은 인증서 패치가 필요하다.
 
 ## 1. 설치와 복제
 
@@ -41,7 +41,7 @@ Homebrew 서비스 등록 없이 `.local/data`를 사용하는 네이티브 DB�
 직접 Maven Wrapper를 사용하려면:
 
 ```sh
-export JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+export JAVA_HOME="$PWD/.local/jdks/temurin-21.0.13+9/Contents/Home"
 set -a
 . .local/db.env
 set +a
@@ -66,12 +66,12 @@ set +a
 
 [홈](http://127.0.0.1:8080), [도서](http://127.0.0.1:8080/books), [거래처](http://127.0.0.1:8080/partners), [주문](http://127.0.0.1:8080/orders), [재고](http://127.0.0.1:8080/inventory), [보고서](http://127.0.0.1:8080/reports/sales), [상태 확인](http://127.0.0.1:8080/health).
 
-실행 스크립트는 Homebrew Java 21 경로를 자동 설정한다. 기존 `JAVA_HOME`이 있으면 해당 값을 사용하므로 Java 21인지 확인한다. 포트 변경은 `PORT=8081 ./scripts/run.sh`로 할 수 있다.
+실행 스크립트는 설치된 프로젝트 Temurin을 우선 사용하고, 없으면 Homebrew Java로 fallback한다. 기존 `JAVA_HOME`이 있으면 해당 값을 사용하므로 `./scripts/java-info.sh`로 배포판과 보안 빌드를 확인한다. 포트 변경은 `PORT=8081 ./scripts/run.sh`로 할 수 있다.
 
 패키징한 WAR를 직접 실행할 수도 있다.
 
 ```sh
-export JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+export JAVA_HOME="$PWD/.local/jdks/temurin-21.0.13+9/Contents/Home"
 set -a
 . .local/db.env
 . .local/auth.env

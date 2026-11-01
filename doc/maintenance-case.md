@@ -34,7 +34,7 @@ Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
 BUILD FAILURE
 ```
 
-실제 실행 로그는 Git 제외 `.local/maintenance-before.log`다. 임시 사본은 `/private/tmp/erp-portfolio-4ttpsgva`였으며 환경 파일과 target을 복사하지 않았다.
+실제 실행 로그는 Git 제외 `.local/maintenance-before.log`다. 별도 임시 폴더에 만든 사본이며 환경 파일과 target을 복사하지 않았다.
 
 ## 수정과 이유
 

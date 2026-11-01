@@ -1,5 +1,23 @@
 # 검증 결과
 
+## 최신 결과 — 비공개 GitHub 제출본 (2026-11-01)
+
+Temurin 21.0.13+9 ARM64에서 전체 **93개, 실패/오류/스킵 0, WAR BUILD SUCCESS(01:10)**. .local/publish-20261101-tests.log 및 test-summary.json. 기존 SQL Injection/JSP/인증·세션/업무 회귀를 포함하며 이번 B2C/API는 설계만 작성해 테스트된 기능이라고 표시하지 않는다. Git 이력/제출 인덱스 비밀정보 및 원격 CI의 실제 결과는 RELEASE.md에 연결한다.
+
+## 최신 결과 — 프로젝트 Java 패치 (2026-10-31)
+
+Temurin 21.0.13+9 LTS/ARM64에서 `./scripts/verify.sh` → **93 tests, 0 failures, 0 errors, 0 skipped, WAR BUILD SUCCESS**, 39.213초. .local/java-patch-20261031-tests-final.log 및 test-summary.json. 모든 Surefire JVM이 새 java.home을 사용한 것을 확인했다. SQL Injection·실제 JSP XSS/로그인·세션·CSRF 회귀 포함.
+
+공개 문제 인증서 체인 16개는 기존 JDK 16개 허용→새 JDK 16개 거부. 새 JDK의 Maven Central/GitHub API 정상 HTTPS 각각 200. 공급자 정책상 G1이 남는 점을 오판하지 않는다. 첫 비교 도구의 TLS authType 오류는 수정 후 재검증했다. 최초 전체 실행의 Mockito 임시 파일 공간 부족은 이전 Trivy DB 캐시 정리 후 해결했다. [JAVA_PATCH.md](JAVA_PATCH.md) 참고. Docker/운영 서버·원격 CI를 이번 패치로 다시 실행한 것은 아니다.
+
+## 최신 결과 — 보안 점검 (2026-10-31, 시작 10-30)
+
+SQL Injection 회귀 1개를 추가하여 로컬 `./scripts/verify.sh`에서 **93 tests, 0 failures, 0 errors, 0 skipped, WAR BUILD SUCCESS**, 03:03. Homebrew OpenJDK 21.0.12.1에서 수행했으며 인증서 신뢰 문제는 테스트 통과와 별도로 남아 있다. .local/security-audit-20261030-tests-final.log 및 test-summary.json에 기록했다.
+
+원격 main 61ec991의 [Actions 41075646210](https://github.com/songsunglyong/publishing-erp-mini/actions/runs/41075646210)은 Temurin 21.0.13+9에서 기존 **92개/WAR·고유 Java 71패키지 HIGH/CRITICAL gate·secret 검사 성공**. 신규 로컬 테스트를 푸시하지 않았으므로 93개로 보고하지 않는다. 로컬 해석 Maven 런타임/테스트 113좌표의 OSV 매칭도 0건이다. Docker/CA·권한·검증 한계의 상세는 [SECURITY_AUDIT_2026-10-31.md](SECURITY_AUDIT_2026-10-31.md) 참고.
+
+초기 DB 연결 실패와 디스크 부족 컴파일/Trivy 실패 후 DB 실행 유지·여유 확인을 거쳐 재검증했다. 전체 검사 실패가 없었다고 보고하지 않는다. 아래는 이전 전환 당시의 검증 이력이다.
+
 ## 최신 결과 — Boot 4 전환 (2026-10-21)
 
 Boot 4.1.1/MyBatis Starter 4.1.0/Security 7.1.1/Framework 7.0.9, Tomcat 11.0.27/Jackson 3.1.7. `./scripts/verify.sh` → **92 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS**, 28.917초. 기존 91개와 오류/UTF-8 실제 바인딩 검증 1개다. .local/boot4-final-tests.log.
@@ -38,7 +56,7 @@ Tomcat 10.1.61/Jackson BOM 2.21.7 적용 후 전체 91개(실패/오류/건너�
 
 - Phase 2: 확정 시 무예약, 부족 재고 전체 롤백, 중복 출고, 입고 중복, 부분/전체/초과/타 주문 품목 반품, 별도 DB 연결 2개를 사용한 출고·반품 경쟁 검증. 헤더/첫 품목 저장 후 두 번째 INSERT를 실제 DB trigger로 실패시켜 등록 원자성도 검사했다.
 - Phase 3: 1월 출고 700원/2월 반품 300원 → 기간별 700/-300, 전체 400원. 주문 단가와 월 경계, 도서/거래처 대사, 접근 차단 검증.
-- Phase 4: 현재 Git 대상 소스를 비밀·target 없이 `/private/tmp/erp-portfolio-4ttpsgva`에 복사하고 새 전용 DB에 4개 마이그레이션 적용 후 **91개/WAR 성공(33.957초)**. 실제 원격 clone과 구분한다. 현재 main 소스가 검증 사본과 일치함을 확인했고 임시 검증 DB·계정은 종료 후 정리했다.
+- Phase 4: 현재 Git 대상 소스를 비밀·target 없이 별도 임시 폴더에 복사하고 새 전용 DB에 4개 마이그레이션 적용 후 **91개/WAR 성공(33.957초)**. 실제 원격 clone과 구분한다. 현재 main 소스가 검증 사본과 일치함을 확인했고 임시 검증 DB·계정은 종료 후 정리했다.
 - Chromium 실제 화면: 새 합성 도서 2종/거래처/각 20권 입고/3·2권 주문/출고/첫 품목 1권 반품. 출고 75,000원/반품 15,000원/순매출 60,000원. 원장·보고서 포함 화면 5개, JS 오류 0개. 주문 상세와 보고서 PNG를 직접 열어 표시를 확인했다.
 - 패키징한 WAR를 8081에서 직접 시작, 실제 로그인 후 주문·주문 등록·재고·원장·보고서 JSP 5개 HTTP 200. 검증 후 해당 WAR 프로세스는 종료하고 8080 개발 앱을 유지했다.
 - 유지보수: 임시 사본만 MANDATORY→REQUIRES_NEW 변경, 기대 재고 5/실제 3으로 회귀 테스트 실패. 복구 후 같은 테스트 1개 통과. [사례](maintenance-case.md).
@@ -134,4 +152,4 @@ Phase 2 주문·출고·반품·재고 원장 및 동시성 테스트, Phase 3 �
 
 25f7f46의 Actions 39544325071 전체 성공: 92개/WAR, 고유 Java 패키지 71개·필수 라이브러리 실제 분석, HIGH/CRITICAL gate와 source secret 검사 단계 성공. 기존 Spring/Jackson 항목은 사라졌으며 무시 규칙 없음.
 
-실제 GitHub clone 25f7f46을 /private/tmp/erp-github-clone-7d_ygl9h에 받아 빈 전용 DB에서 92개/WAR 성공(32.085초). 임시 DB·계정 정리 완료. 최종 코드를 반영한 8080 개발 앱의 실제 Chromium도 업무 화면/품목 추가·삭제/한국어 404, JS 오류 0개를 확인했다.
+실제 GitHub clone 25f7f46을 별도 임시 폴더에 받아 빈 전용 DB에서 92개/WAR 성공(32.085초). 임시 DB·계정 정리 완료. 최종 코드를 반영한 8080 개발 앱의 실제 Chromium도 업무 화면/품목 추가·삭제/한국어 404, JS 오류 0개를 확인했다.

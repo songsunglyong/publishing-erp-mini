@@ -1,5 +1,45 @@
 # 변경 기록
 
+## 2026-11-01 — 쇼핑몰 주문 설계·제출본 정리
+
+- MALL_ORDER_DESIGN.md에 기존 books.id 재사용, 환경별 키 구분, 표준 JSON 주문 양식, 쇼핑몰별 외부 주문번호 중복 방지·인증·DRAFT 수신·배송지/채널/감사 계정 확장 설계를 기록했다. API/업무 기능은 새로 구현하지 않았다.
+- README와 DEVELOPMENT_NOTES.md에 출고 정합성·동시성·일부 커밋 실패→성공 실험·보안 검사 분석 범위 보완·Boot/JDK 패치 등 실제 검증 노력을 연결했다. 단독 작성/실고객 장애/운영 경험을 과장하지 않는다.
+- 최신 사용자 지시로 공개 전환은 보류하고 비공개 유지한다. 재사용 불필요한 임시 경로를 문서에서 제거했고 .local/비밀/원문 로그/JDK/DB는 제외한다. 기존 이력의 비밀 검사와 공개 전환은 별개다.
+- 최근 Java 패치·SQL Injection 회귀가 포함된 전체 **93개, 실패/오류/스킵 0, WAR 성공(01:10)**을 다시 확인했다. 업로드·원격 CI 실제 결과는 RELEASE.md에 기록한다.
+
+## 2026-11-01 — ERP 전체 구조와 취업 준비 설명
+
+- 실제 Controller/Service/Mapper XML·V1~V3 DDL·JSP를 읽어 PROJECT_WALKTHROUGH.md를 작성했다. 기능별 업무, 데이터 관계·PK/FK/UNIQUE·요청 키, 숫자로 보는 입고/출고/반품/조정·매출 흐름을 정리했다.
+- 화면 표시만 바꿀 때와 저장 항목/업무/권한을 바꿀 때의 파일 범위, 개발 JSP 반영과 운영 WAR 재배포의 차이를 명시했다. 현재 동작과 무정지/운영 설계 미구현도 구분했다.
+- Java 패치 복습 3개 정답을 LEARNING/TODO에 반영하고 기록 수정 과제 수행과는 분리했다. 새 전체 구조 과제 1개·질문 3개 및 시연/기존 유지보수 경험 정리 방향을 안내서에 기록했다.
+- 문서만 변경했다. 업무 코드·DB·서버·사용자 화면은 변경하지 않았고 기존 93개 테스트를 이번에 재실행하지 않았다. 문서 상대 링크/코드 블록·참조 파일 존재·git diff --check를 검증했다.
+
+## 2026-10-31 — 승인된 프로젝트 Java 보안 패치
+
+- Temurin 21.0.13+9 LTS/macOS aarch64를 공식 GitHub 배포·SHA256 대조 후 .local/jdks에 별도 설치했다. 설치 크기 약 335MB, 다운로드 압축파일은 설치 후 제거했다. 기존 Homebrew·시스템 설정·CA는 변경하지 않았다.
+- scripts/env.sh가 명시적 JAVA_HOME을 존중하면서 프로젝트 JDK를 우선 선택하고 현재 스크립트 PATH를 일치시키도록 수정했다. scripts/java-info.sh와 JAVA_PATCH.md를 추가하고 README/보안 점검/프로젝트/검증/학습 문서를 갱신했다.
+- 공개 체인 16개 비교: 기존 JDK는 모두 허용, 패치 JDK는 모두 거부. 패치 JDK의 Maven Central·GitHub API HTTPS는 각각 200. 공급자 정책상 G1 잔존과 관련 G3/AAA 제거를 구분했다. 실제 MITM·서명 JAR 전 경로 검증은 아니다.
+- 새 Java의 최초 전체 실행은 공간 부족으로 Mockito 임시 파일 생성이 실패했다. 재생성 가능한 이전 Trivy DB 캐시만 정리한 후 **93개, 실패/오류/스킵 0, WAR BUILD SUCCESS(39.213초)**. JSP·인증·세션·CSRF·SQL Injection 회귀 포함.
+- scripts 구문 검사·기본/명시적 JAVA_HOME 선택·JDK Git 제외·문서 링크/diff 검증을 수행했다. DB 권한·업무 코드·Docker/서버·GitHub 원격은 변경하지 않았다. 패치 이해 확인/다른 운영 보완은 남아 있다.
+
+## 2026-10-31 — 실제 코드·런타임·의존성 보안 점검 (10-30 시작)
+
+- SECURITY_AUDIT_2026-10-31.md에 버전/실제 JDK 빌드, CVE-2026-91403, SQL/XSS/CSRF/인증·인가·세션, DB 권한/비밀정보/포트와 심각도·수정 전후 검증 계획을 작성했다.
+- 로컬 Homebrew OpenJDK 21.0.12.1에서 관련 CA 잔존을 확인했고, 원격 CI/공개 Docker 태그의 Temurin 21.0.13+9와 구분했다. 인증서·JDK·의존성·운영 권한은 변경하지 않았다.
+- MasterDataTest에 공격 구문을 문자열로 저장·조회하는 SQL Injection 회귀 1개를 추가했다. 로컬 전용 DB에서 **93개, 실패/오류/스킵 0, WAR 성공(03:03)**. 기존 실제 JSP XSS/보안 회귀도 포함한다.
+- 기존 원격 main 61ec991의 새 Actions 41075646210에서 **92개/WAR·Java 71개 HIGH/CRITICAL gate·source secret 검사 성공**. 로컬 새 테스트는 푸시하지 않아 원격 92개와 구분한다. 실제 Maven 런타임/테스트 113좌표 OSV 조회는 매칭 0건.
+- Trivy 소스 검사·현재 생성 비밀 3개의 추적 파일/이력 274blob·이번 WAR/로그 대조에서 매칭이 없었다. 다른 미지의 모든 과거 비밀까지 부재라고 주장하지 않는다.
+- 최초 DB 미기동/백그라운드 종료와 디스크 부족에 따른 실패를 기록했다. 전경 DB 유지·여유 확보 확인 후 테스트를 완료했다. 사용자 파일은 삭제하지 않았고 이번에 받은 Trivy 압축파일만 정리했다.
+- Docker CLI가 없어 컨테이너 기동은 하지 않았다. 공개 태그의 두 아키텍처 metadata·digest를 읽고 amd64 OS 이미지 3개를 분석했다: HIGH/CRITICAL 0, 실행 JRE M27/L16·MariaDB M21/L7·빌드 JDK M45/L46. 공개 필드의 162항목 CSV를 남겼다. 로컬 WAR 전체 Trivy는 인덱스 공간 부족으로 미완료이며 원격 gate/OSV 결과와 구분했다. 승인 전 호환성 변경·계정/서버 생성·배포·푸시는 없다.
+
+## 2026-10-29 — 운영·점검·배포 설계 초안
+
+- OPERATIONS_DESIGN.md 작성: 운영 DB를 연결한 비공개 배포 확인, 단일 앱 점검 배포, Nginx 정적 안내, 블루·그린 전환·drain, DB 호환성/마이그레이션/롤백과 외부 안내·백업 복구를 정리했다.
+- 현재 SessionRegistryImpl/LiveSessions/SessionGuardFilter를 대조해 Redis 추가만으로 다중 앱의 로그인 유지·단일 로그인·세션 폐기가 완성되지 않음을 기록했다. 운영 프로필/프록시·TLS는 미구현 상태로 구분했다.
+- DigitalOcean의 2GiB/$12와 4GiB/$24, Contabo의 공식 Core VPS 사양과 지역 추가 비용을 확인했다. Contabo 요금 페이지 직접 접근 403과 계약·통화별 차이로 최종 견적은 확정하지 않았다. 업체 구매를 결정하지 않았다.
+- TODO/DECISIONS/PROJECT/LEARNING에 설계 범위, O1~O6 미구현·이해 확인 대기를 기록했다. 코드·운영 DB는 변경하지 않았다.
+- 검증은 문서 상대 링크/필수 항목과 git diff --check에 한정한다. 이번에 기존 92개 테스트를 재실행하거나 Docker/Nginx/서버/백업 복원을 실행하지 않았다. 서버 가입·결제·자원 생성·배포·GitHub 푸시는 하지 않았다.
+
 ## 2026-10-21 — 사용자 승인에 따른 Boot 4 전환
 
 - Boot 4.1.1·MyBatis Starter 4.1.0·Security 7.1.1·Framework 7.0.9·Tomcat 11.0.27로 전환했다. JSP 실행 WAR, 기존 SQL/마이그레이션/데이터/업무 규칙을 보존했다.
