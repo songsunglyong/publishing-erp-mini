@@ -61,7 +61,7 @@ Docker 실행·배포·서버 호스팅은 진행하지 않았습니다. **현�
 
 ## 배포 전 확인
 
-사용자 요청으로 Boot 4.1.1과 호환 MyBatis/Security, Tomcat 11·Jackson 3으로 전환했습니다. 로컬 92개 테스트와 실제 JSP/WAR 검증을 통과했습니다. 최종 원격 92개 테스트·Java 71개 패키지 분석·HIGH/CRITICAL 취약점 검사·비밀정보 검사까지 통과했습니다. 인터넷 공개 배포는 아직 하지 않았습니다. [보안 검토](doc/SECURITY_REVIEW.md)와 [릴리스 기록](doc/RELEASE.md)을 확인하세요.
+사용자 요청으로 Boot 4.1.1과 호환 MyBatis/Security, Tomcat 11·Jackson 3으로 전환했습니다. 최신 로컬·원격 93개 테스트와 WAR 빌드, 원격 Java 71개 패키지 분석·HIGH/CRITICAL 취약점 검사·비밀정보 검사를 통과했습니다. 인터넷 공개 배포는 아직 하지 않았습니다. [보안 검토](doc/SECURITY_REVIEW.md)와 [릴리스 기록](doc/RELEASE.md)을 확인하세요.
 
 ## 실제 화면
 
