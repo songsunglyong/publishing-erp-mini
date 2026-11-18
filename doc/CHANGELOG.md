@@ -324,3 +324,7 @@
 - 공식 릴리스: https://github.com/corretto/corretto-21/releases/tag/21.0.13.1.2
 
 - Git 반영 검증: AMD64 서버에서 실제 Maven·JDK·JRE 기본 이미지 각각에 패치 명령을 실행해 공식 SHA-256·Corretto 21.0.13.1.2·release 파일을 확인했다. ARM64는 공식 체크섬을 반영했으며 실행 검증은 하지 않았다. 기존 업무 소스 전체 재빌드·단위 테스트는 이번 Git 반영에서 실행하지 않았다.
+
+## 2026-11-18 — Java 보안 커밋의 GitHub 검사 완료
+
+- `95e2386`의 [Security and regression checks](https://github.com/songsunglyong/publishing-erp-mini/actions/runs/44243183090)가 성공했다. 로그인·세션·권한·JSP·DB 회귀, WAR 빌드, HIGH/CRITICAL 의존성 검사·Java 패키지 검사 범위 확인·추적 소스 비밀값 검사를 통과했다. 위의 미실행 표시는 로컬 수동 전체 테스트에 해당하며 원격 CI는 완료됐다.

@@ -213,3 +213,5 @@ Phase 0~3 기능 구현과 Phase 4 산출물을 완료했다. 최신 전체 테�
 
 - [x] 서버 Java를 Corretto 21.0.13.1.2로 패치하고 실제 JVM·HTTP 응답 확인
 - [x] 공식 AMD64·ARM64 체크섬과 패치 버전 검사를 Dockerfile에 반영
+
+- [x] Java 보안 커밋 `95e2386`의 GitHub 회귀·WAR·의존성·비밀값 검사 성공 확인 (44243183090)
