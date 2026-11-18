@@ -167,3 +167,7 @@
 - Boot BOM의 Tomcat 11.0.24 대신 같은 Servlet 6.1 계열의 정식 보안 패치 11.0.27을 사용한다. 기존 Tomcat 10 override를 그대로 가져오지 않는다.
 - 오류 비노출은 spring.web.error, UTF-8 강제는 spring.servlet.encoding으로 이관하고 실제 바인딩을 자동 테스트로 검증한다. 오류 전용 MVC slice는 Boot 4의 ServletWebSecurityAutoConfiguration을 제외하여 기존 테스트 경계를 유지하며 실제 보안 검증은 별도 테스트에 그대로 둔다.
 - 이전 CI 실패 이력과 새 전환 검증을 분리한다. 무시 목록으로 CVE를 숨기지 않는다. 서버 계정 가입/배포는 보류한다.
+
+## 2026-11-18 — Docker Java 21 패치 버전을 검증한다
+
+Temurin 패치 배포 대기 대신 공식 Corretto 21.0.13.1.2를 사용한다. Java 21과 기존 앱 구조는 유지하며 빌드·실행 단계 모두 패치한다. Docker TARGETARCH로 AMD64·ARM64 패키지를 선택하고 공식 SHA-256 및 java -version을 검사해 오래된 기본 이미지의 Java를 사용하지 않도록 한다.

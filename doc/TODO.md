@@ -208,3 +208,8 @@ Phase 0~3 기능 구현과 Phase 4 산출물을 완료했다. 최신 전체 테�
 
 - [x] 사용자 Boot 4 전환 승인에 따라 이전 Spring 버전 선택/의존성 항목을 해결했다. 미해결 표시는 이전 이력이며 최신 RELEASE.md 기준으로 판단한다.
 - [ ] CI actions/checkout·setup-java의 SHA 고정 버전 갱신 점검(Node 24 강제 실행은 성공).
+
+## Java 보안 패치 · 2026-11-18
+
+- [x] 서버 Java를 Corretto 21.0.13.1.2로 패치하고 실제 JVM·HTTP 응답 확인
+- [x] 공식 AMD64·ARM64 체크섬과 패치 버전 검사를 Dockerfile에 반영
